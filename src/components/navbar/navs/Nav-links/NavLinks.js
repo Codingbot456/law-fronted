@@ -15,6 +15,9 @@ const NavLinks = () => {
       <Link to="/blog" className="link">Blogging</Link>
       <Link to="/create-post" className="link">Create-blog</Link>
       <Link to="/update-post" className="link">update-blog</Link>
+      <Link to="/create-product" className="link">Create-product</Link>
+      <Link to="/men" className="link">Stationary</Link>
+      
     </div>
   );
 };

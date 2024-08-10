@@ -10,13 +10,35 @@ const AnswerForm = ({ submissionId, onSuccess }) => {
   const [attachments, setAttachments] = useState([]);
   const [errors, setErrors] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [isDragOver, setIsDragOver] = useState(false);
 
   if (role !== 'tutor' && role !== 'admin') {
     return <p className="error-message">You do not have permission to answer this question.</p>;
   }
 
   const handleFileChange = (e) => {
-    setAttachments(e.target.files);
+    setAttachments([...e.target.files]);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+
+    const files = Array.from(e.dataTransfer.files);
+    setAttachments((prevAttachments) => [...prevAttachments, ...files]);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
   };
 
   const handleSubmit = async (e) => {
@@ -78,7 +100,12 @@ const AnswerForm = ({ submissionId, onSuccess }) => {
             required
           />
         </div>
-        <div className="form-group">
+        <div
+          className={`form-group drag-drop-area ${isDragOver ? 'drag-over' : ''}`}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+        >
           <label className="form-label">Upload Attachments:</label>
           <input
             type="file"
@@ -86,7 +113,20 @@ const AnswerForm = ({ submissionId, onSuccess }) => {
             multiple
             onChange={handleFileChange}
           />
+          <p>Drag files here or click to upload</p>
         </div>
+        {attachments.length > 0 && (
+          <div className="file-preview">
+            <h4>Files to Upload:</h4>
+            <ul>
+              {Array.from(attachments).map((file, index) => (
+                <li key={index}>
+                  <span>{file.name} ({(file.size / 1024).toFixed(2)} KB)</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         {errors && <span className="error-message">{errors}</span>}
         {successMessage && <span className="success-message">{successMessage}</span>}
         <button type="submit" className="submit-button">Submit</button>

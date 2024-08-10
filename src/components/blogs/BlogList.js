@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getPosts, likePost, getCategories, getPostsByCategory, createComment, getComments } from '../../services/api';
 import './blogList.css'; // Import the CSS file
-import { FaEdit, FaShareAlt } from 'react-icons/fa'; // Import icons
+import { FaEdit, FaShareAlt, FaPaperPlane } from 'react-icons/fa'; // Import icons
 
 const BlogList = () => {
   const [posts, setPosts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState('2');
+  const [selectedCategory, setSelectedCategory] = useState(''); // Default to '' to show all posts
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newComment, setNewComment] = useState({});
@@ -40,7 +40,7 @@ const BlogList = () => {
       try {
         const response = selectedCategory
           ? await getPostsByCategory(selectedCategory)
-          : await getPosts();
+          : await getPosts(); // Fetch all posts if no category selected
         setPosts(response.data);
         console.log('Fetched posts:', response.data); // Log fetched posts
       } catch (error) {
@@ -148,73 +148,88 @@ const BlogList = () => {
       {posts.length === 0 ? (
         <p>No posts available.</p>
       ) : (
-        posts.map(post => (
-          <div key={post.id} className="post">
-            <div className="post-header">
-              <img
-                src={post.author_profile_image || '/default-avatar.png'} // Fallback to a default image
-                alt={`${post.author_name}'s avatar`}
-                className="author-image"
-              />
-              <h2>{post.title}</h2>
-              <Link to={`/edit/${post.id}`} className="edit-icon">
-                <FaEdit />
-              </Link>
-            </div>
-            <p><strong>Author:</strong> {post.author_name}</p>
-            <p><strong>Posted on:</strong> {new Date(post.created_at).toLocaleDateString()}</p>
-            <p>{post.content}</p>
-            <div className="images">
-              {post.images && post.images.map((image, index) => (
+        posts.map(post => {
+          // Filter comments for the current post
+          const postComments = comments.filter(comment => comment.post_id === post.id);
+
+          return (
+            <div key={post.id} className="post">
+              <div className="post-header">
                 <img
-                  key={index}
-                  src={image}
-                  alt={`Post image ${index + 1}`}
-                  className="post-image"
+                  src={post.author_profile_image || '/default-avatar.png'} // Fallback to a default image
+                  alt={`${post.author_name}'s avatar`}
+                  className="author-image"
                 />
-              ))}
-            </div>
-            <div className="actions">
-              <button className="like-button" onClick={() => handleLike(post.id)}>👍</button>
-              <button className="share-button" onClick={() => handleShare(post.id)}>
-                <FaShareAlt />
-              </button>
-              <button className="comment-button" onClick={() => toggleComments(post.id)}>
-                {showComments[post.id] ? 'Hide Comments' : 'Show Comments'}
-              </button>
-              <p>{post.likes} likes</p>
-            </div>
-            {showComments[post.id] && (
-              <div className="comments-section">
-                <h3>Comments</h3>
-                <form onSubmit={(e) => handleCommentSubmit(post.id, e)} className="comment-form">
-                  <textarea
-                    value={newComment[post.id] || ''}
-                    onChange={(e) => handleCommentChange(e, post.id)}
-                    placeholder="Write a comment..."
-                    required
+                <h2>{post.title}</h2>
+                <Link to={`/edit/${post.id}`} className="edit-icon">
+                  <FaEdit />
+                </Link>
+              </div>
+              <p><strong>Author:</strong> {post.author_name}</p>
+              <p><strong>Posted on:</strong> {new Date(post.created_at).toLocaleDateString()}</p>
+              <p>{post.content}</p>
+              <div className="images">
+                {post.images && post.images.map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`Post image ${index + 1}`}
+                    className="post-image"
                   />
-                  <button type="submit" className="primary-button">Submit</button>
-                </form>
-                <ul>
-                  {comments.filter(comment => comment.post_id === post.id).map(comment => (
-                    <li key={comment.id} className="comment-item">
+                ))}
+              </div>
+              <div className="actions">
+                <button className="like-button" onClick={() => handleLike(post.id)}>👍</button>
+                <button className="share-button" onClick={() => handleShare(post.id)}>
+                  <FaShareAlt />
+                </button>
+                <button className="comment-button" onClick={() => toggleComments(post.id)}>
+                  {showComments[post.id] ? 'Hide Comments' : 'Show Comments'}
+                </button>
+                <p>{post.likes} likes</p>
+                <p>{postComments.length} comments</p> {/* Number of comments */}
+              </div>
+              {showComments[post.id] && (
+                <div className="comments-section">
+                  <h3>Comments</h3>
+                  <form onSubmit={(e) => handleCommentSubmit(post.id, e)} className="comment-form">
+                    <div className="comment-form-container">
                       <img
-                        src={comment.author_profile_image || '/default-avatar.png'} // Fallback to a default image
-                        alt={`${comment.author_name}'s avatar`}
+                        src={userId ? `/path-to-user-image/${userId}.png` : '/default-avatar.png'} // Fallback to default image
+                        alt="Your avatar"
                         className="commenter-image"
                       />
-                      <div className="comment-content">
-                        <p className="comment-author">{comment.author_name || 'Anonymous'}</p>
-                        <p>{comment.content}</p>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        ))
+                      <textarea
+                        value={newComment[post.id] || ''}
+                        onChange={(e) => handleCommentChange(e, post.id)}
+                        placeholder="Add comment..."
+                        required
+                      />
+                      <button type="submit" className="submit-icon">
+                        <FaPaperPlane /> {/* Submit icon */}
+                      </button>
+                    </div>
+                  </form>
+                  <ul>
+                    {postComments.map(comment => (
+                      <li key={comment.id} className="comment-item">
+                        <img
+                          src={comment.author_profile_image || '/default-avatar.png'} // Fallback to a default image
+                          alt={`${comment.author_name}'s avatar`}
+                          className="commenter-image"
+                        />
+                        <div className="comment-content">
+                          <p className="comment-author">{comment.author_name || 'Anonymous'}</p>
+                          <p>{comment.content}</p>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          );
+        }) // Closing the map function here
       )}
     </div>
   );

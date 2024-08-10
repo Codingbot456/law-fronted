@@ -1,9 +1,10 @@
 import React from 'react';
+import { FaShoppingCart } from 'react-icons/fa'; // Import cart icon
 import NavLinks from '../Nav-links/NavLinks';
 import NavDropdown from '../Nav-Dropdown/SignUpDropdown';
 import './Nav.css';
 
-const Navbar = ({ toggleSidebar }) => {
+const Navbar = ({ toggleSidebar, toggleCart }) => {
   return (
     <nav className="top-nav">
       <div className="top-nav-content">
@@ -14,6 +15,9 @@ const Navbar = ({ toggleSidebar }) => {
         </div>
         <button className="sidebar-toggler" onClick={toggleSidebar}>
           ☰
+        </button>
+        <button className="cart-toggler" onClick={toggleCart} aria-label="Toggle Cart">
+          <FaShoppingCart className="cart-icon" />
         </button>
       </div>
     </nav>

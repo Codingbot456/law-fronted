@@ -1,0 +1,288 @@
+.card{
+    box-sizing:border-box;
+    transition:.3s ease;
+    border: none;
+    cursor: pointer;
+    flex: 1;
+  }
+  
+  .card .card-info4-4 p{
+    height: 20px;
+    overflow: hidden;
+    
+  }
+
+  .card:hover{
+    scale:1.0091;
+  }
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100987654321; /* Higher z-index to appear above other elements */
+}
+
+.buy-card4 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    overflow-y: scroll;
+    gap: 20px;
+ 
+    border-radius: 10px;
+    background-color:whitesmoke;
+   
+    z-index: 1001; /* Higher than the overlay to be on top */
+    max-width: 950px; /* Limit the width */
+    width: 90%; /* Responsive width */
+    position: relative;
+    text-align: left;
+}
+
+.buy-card4 .card-image{
+   height: 100%;
+}
+
+.card-info4, .card-gap4, .card-abt4, .card-image4 {
+    opacity: 1;
+    transition: opacity 0.3s;
+}
+
+.dimmed .card-info4, .dimmed .card-gap4, .dimmed .card-abt4, .dimmed .card-image4 {
+    opacity: 0.5; /* Reduced opacity when dimmed */
+}
+.close{
+    background-color: red;
+    display: grid;
+    place-content: center;
+    position: absolute;
+    right: 0;
+    height: 50px;
+    width: 50px;
+}
+
+.close-button {
+    display: grid;
+    place-content: center;
+    text-align: center;
+    padding: 10px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    font-size: 1.5em;
+    position:absolute;
+    top: 0;
+   right:0 ;
+    cursor: pointer;
+    transition: 0.5s ease;
+}
+
+
+.cart-buy-abt2 {
+    padding: 20px;
+    display: grid;
+    gap: 10px;
+}
+
+.sizes {
+    display: flex;
+    gap: 10px;
+}
+
+
+.size-btn {
+    cursor: pointer;
+    transition: background 0.3s;
+    font-size: 10px;
+    font-weight: bolder;
+ 
+}
+
+.size-btn.selected {
+  
+}
+
+.color-picker {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.buys {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+   background-color: blue;
+}
+.card .cart-item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.description{
+    height: 40px;
+    overflow: hidden;
+}
+
+
+
+.quantity1{
+  display:flex;
+  justify-content: flex-start;
+  gap: 5px;
+ 
+}
+
+
+
+.quantity1 .quantity-btn {
+    display: grid;
+    background-color: #888888;
+    color: white;
+   
+
+   
+   
+}
+.cart-buy-abt2{
+    display: grid;
+   
+    gap: 2px;
+}
+.quantity-value{
+   place-content: center;
+    background-color: transparent;
+    color: black;
+
+  
+  
+}
+
+
+.buy-card-main .card-image-main{
+    height: 100%;
+   width: auto;
+}
+.cart-buy-abt{
+    
+    width: 400px;
+    overflow: hidden;
+   
+   
+}
+.card-image{
+    object-fit: cover;
+    width: 100%;
+    
+}
+
+
+.cart-buy-abt2 .card-wrap{
+    display: grid;
+    gap: 20px;
+}
+.cart-actions button{
+    display:grid;
+    place-content:center;
+    text-wrap:no-wrap;
+    width:150px;
+    height:100%;
+    max-height:40px;
+}
+.sizes button{
+    display: grid;
+    place-content: center;
+    width:40px;
+    height:40px;
+}
+.description{
+   
+    text-align: left;
+}
+
+
+@media (max-width: 600px) {
+    .buy-card4 {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        width: 350px;
+      
+    }
+
+    .cart-buy-abt{
+       display: grid;
+     
+       width:   100%;
+
+       
+       
+       
+    }
+
+    
+
+    .card-image {
+        width:100%;
+        height: 350px;
+        justify-self: center
+    }
+
+    .cart-buy-abt2 {
+        display: flex;
+        flex-direction: column;
+       
+    }
+
+    .card-info h4 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+
+    .card-info p1 {
+        font-size: 1rem;
+       
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .card-info h5 {
+        font-size: 1.1rem;
+        
+        margin-bottom: 15px;
+    }
+
+    .sizes {
+        display: flex;
+        flex-wrap: no-wrap;
+        gap: 10px;
+    }
+
+    .size-btn {
+        padding: 5px 10px;
+       
+        cursor: pointer;
+    }
+    .description{
+        height: 40px;
+        overflow-y: scroll;
+    }
+ 
+
+    .quantity-value {
+        font-size: 1.2rem;
+    }
+
+
+}

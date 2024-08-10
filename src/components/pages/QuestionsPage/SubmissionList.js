@@ -7,6 +7,7 @@ import './Form.css'; // Import the unified CSS
 const SubmissionList = () => {
   const { role, userId } = useAuth();
   const [submissions, setSubmissions] = useState([]);
+  const [filteredSubmissions, setFilteredSubmissions] = useState([]);
   const [error, setError] = useState('');
   const [showAnswerForm, setShowAnswerForm] = useState(null);
 
@@ -15,6 +16,7 @@ const SubmissionList = () => {
       try {
         const response = await axios.get('http://localhost:4000/api/submissions');
         setSubmissions(response.data);
+        setFilteredSubmissions(response.data); // Initialize filteredSubmissions with fetched data
       } catch (err) {
         setError('Error fetching submissions.');
       }
@@ -38,18 +40,26 @@ const SubmissionList = () => {
     return [];
   };
 
+  const handleFilter = (type) => {
+    if (type === 'all') {
+      setFilteredSubmissions(submissions);
+    } else {
+      setFilteredSubmissions(submissions.filter(sub => sub.type === type));
+    }
+  };
+
   return (
     <div className="form-container">
       <h2 className="form-header">Submission List</h2>
       {error && <span className="error-message">{error}</span>}
       <div className="button-group">
-        <button onClick={() => setSubmissions([])} className="highlight-button">All</button>
-        <button onClick={() => setSubmissions(submissions.filter(sub => sub.type === 'question'))} className="highlight-button">Questions</button>
-        <button onClick={() => setSubmissions(submissions.filter(sub => sub.type === 'assignment'))} className="highlight-button">Assignments</button>
-        <button onClick={() => setSubmissions(submissions.filter(sub => sub.type === 'project'))} className="highlight-button">Projects</button>
+        <button onClick={() => handleFilter('all')} className="highlight-button">All</button>
+        <button onClick={() => handleFilter('question')} className="highlight-button">Questions</button>
+        <button onClick={() => handleFilter('assignment')} className="highlight-button">Assignments</button>
+        <button onClick={() => handleFilter('project')} className="highlight-button">Projects</button>
       </div>
       <ul className="submission-list">
-        {submissions.map((submission) => (
+        {filteredSubmissions.map((submission) => (
           <li key={submission.id} className="submission-item">
             <h3 className="submission-title">{submission.question || 'No title'}</h3>
             <p><strong>Type:</strong> {submission.type}</p>

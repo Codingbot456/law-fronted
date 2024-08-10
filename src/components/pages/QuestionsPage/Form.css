@@ -1,119 +1,194 @@
 /* Form.css */
 .form-container {
-    background-color: var(--background-color);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 2rem;
-    margin: 1rem auto;
-    max-width: 600px;
-  }
-  
-  .form-header {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    color: var(--primary-color);
-  }
-  
-  .form-group {
-    margin-bottom: 1rem;
-  }
-  
-  .form-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
-  
-  .form-input {
-    width: 100%;
-    padding: 0.5rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 1rem;
-  }
-  
-  textarea.form-input {
-    resize: vertical;
-  }
-  
-  .button-group {
-    margin-bottom: 1rem;
-  }
-  
-  .submit-button,
-  .highlight-button,
-  .accent-button {
-    font-family: 'Roboto', sans-serif;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  
-  .submit-button {
-    background-color: var(--primary-color);
-    color: #FFFFFF;
-  }
-  
-  .submit-button:hover {
-    background-color: #002244; /* Slightly darker Navy Blue */
-  }
-  
-  .highlight-button {
-    background-color: var(--highlight-color);
-    color: #333;
-  }
-  
-  .highlight-button:hover {
-    background-color: #e6c14b; /* Slightly darker Gold */
-  }
-  
-  .accent-button {
-    background-color: var(--accent-color);
-    color: #FFFFFF;
-  }
-  
-  .accent-button:hover {
-    background-color: #66001a; /* Slightly darker Burgundy */
-  }
-  
-  .error-message {
-    color: red;
-    font-weight: bold;
-    display: block;
-    margin-top: 1rem;
-  }
-  
-  .success-message {
-    color: green;
-    font-weight: bold;
-    display: block;
-    margin-top: 1rem;
-  }
-  
-  .submission-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .submission-item {
-    border-bottom: 1px solid var(--border-color);
-    padding: 1rem 0;
-  }
-  
-  .submission-title {
-    font-size: 1.25rem;
-    color: var(--primary-color);
-  }
-  
-  .attachment-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .attachment-list li {
-    margin-bottom: 0.5rem;
-  }
-  
+  background-color: #f8f9fa; /* Light background for a clean look */
+  border: 1px solid #dee2e6; /* Light border color for subtle separation */
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 1rem auto;
+  max-width: 800px; /* Increased width for a more spacious layout */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.form-header {
+  font-size: 1.75rem; /* Slightly larger header for better prominence */
+  margin-bottom: 1.5rem; /* Increased margin for spacing */
+  color: var(--primary-color); /* Deep navy blue for a professional look */
+  font-weight: bold; /* Header font weight for emphasis */
+}
+
+.form-group {
+  margin-bottom: 1.5rem; /* Increased margin for spacing */
+}
+
+.form-label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem; /* Increased padding for better usability */
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+  box-sizing: border-box; /* Ensure padding does not affect width */
+}
+
+textarea.form-input {
+  resize: vertical;
+}
+
+/* New CSS for drag-and-drop area */
+.drag-drop-area {
+  border: 2px dashed #ccc;
+  padding: 1rem;
+  text-align: center;
+  background-color: #f9f9f9;
+  cursor: pointer;
+  position: relative; /* For positioning text within the area */
+}
+
+.drag-drop-area.drag-over {
+  border-color: #007bff; /* Change border color on drag over */
+  background-color: #e9ecef; /* Light background on drag over */
+}
+
+.drag-drop-area p {
+  margin: 0;
+  color: #6c757d; /* Text color for instructions */
+  font-size: 1rem;
+}
+
+/* Maintain existing styles */
+.button-group {
+  margin-bottom: 1.5rem; /* Increased margin for spacing */
+  display: flex;
+  gap: 1rem; /* Space between buttons */
+  flex-wrap: wrap; /* Wrap buttons on smaller screens */
+}
+
+.submit-button,
+.highlight-button,
+.accent-button {
+  font-family: 'Roboto', sans-serif;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  transition: background-color 0.3s, color 0.3s, box-shadow 0.3s; /* Added box-shadow transition */
+}
+
+.submit-button {
+  background-color: var(--primary-color);
+  color: #FFFFFF;
+}
+
+.submit-button:hover {
+  background-color: #002244; /* Slightly darker Navy Blue */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* Subtle shadow on hover */
+}
+
+.highlight-button {
+  background-color: var(--highlight-color);
+  color: #333;
+}
+
+.highlight-button:hover {
+  background-color: #e6c14b; /* Slightly darker Gold */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* Subtle shadow on hover */
+}
+
+.accent-button {
+  background-color: var(--accent-color);
+  color: #FFFFFF;
+}
+
+.accent-button:hover {
+  background-color: #66001a; /* Slightly darker Burgundy */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* Subtle shadow on hover */
+}
+
+.error-message {
+  color: #dc3545; /* Bootstrap red for error messages */
+  font-weight: bold;
+  display: block;
+  margin-top: 1rem;
+}
+
+.success-message {
+  color: #28a745; /* Bootstrap green for success messages */
+  font-weight: bold;
+  display: block;
+  margin-top: 1rem;
+}
+
+.submission-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0; /* Remove default margin */
+}
+
+.submission-item {
+  border-bottom: 1px solid var(--border-color);
+  padding: 1.25rem 0; /* Increased padding for better spacing */
+  margin-bottom: 1rem; /* Space between items */
+  transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+.submission-item:hover {
+  background-color: #f1f3f5; /* Light gray background on hover for better visual feedback */
+}
+
+.submission-title {
+  font-size: 1.5rem; /* Larger title for better readability */
+  color: var(--primary-color); /* Deep navy blue for the title */
+  margin: 0 0 0.5rem 0; /* Margin for spacing */
+  font-weight: 600; /* Slightly bolder title */
+}
+
+.attachment-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0; /* Remove default margin */
+}
+
+.attachment-list li {
+  margin-bottom: 0.75rem; /* Slightly increased margin for better spacing */
+  font-size: 0.875rem; /* Smaller font size for attachments */
+}
+
+.attachment-list li a {
+  color: var(--primary-color); /* Use primary color for links */
+  text-decoration: none; /* Remove underline */
+}
+
+.attachment-list li a:hover {
+  text-decoration: underline; /* Underline on hover for better accessibility */
+}
+/* Add this to Form.css */
+.file-preview {
+  margin-top: 1.5rem; /* Margin to separate from other elements */
+}
+
+.file-preview h4 {
+  font-size: 1.25rem; /* Font size for the section header */
+  margin-bottom: 0.5rem; /* Margin below the header */
+}
+
+.file-preview ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.file-preview li {
+  padding: 0.5rem 0; /* Padding for each list item */
+  border-bottom: 1px solid #dee2e6; /* Border below each file */
+}
+
+.file-preview li span {
+  display: inline-block;
+  font-size: 0.875rem; /* Font size for file details */
+}
