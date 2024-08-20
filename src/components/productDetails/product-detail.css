@@ -1,0 +1,145 @@
+/* src/components/product-detail.css */
+.product-detail-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100000000000;
+
+}
+
+.product-detail-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90vw; /* Adjust width as needed */
+    height: 90vh; /* Use a smaller height to prevent overflow */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden; /* Prevent overflow of content */
+    display: flex;
+    gap: 50px;
+}
+
+.details-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    gap: 70px;
+
+    flex-direction: row; /* Use row direction for main images and details */
+}
+
+.details-images {
+    flex: 2; /* Main image takes more space */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main-image-container {
+    flex: 1; /* Takes a good portion of the space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.product-detail-main-image {
+    width: auto; /* Make main image responsive */
+    max-height: 400px; /* Limit the height */
+    border-radius: 10px;
+    object-fit: cover; /* Maintain aspect ratio */
+   
+}
+
+.thumbnail-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px; /* Spacing between main image and thumbnails */
+    gap: 10px; /* Space between thumbnails */
+}
+
+.thumbnail-image {
+    width: 60px; /* Smaller thumbnail size */
+    height: 60px; /* Keep height consistent */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer;
+    transition: transform 0.2s; /* Smooth transition */
+}
+
+.thumbnail-image:hover {
+    transform: scale(1.1); /* Slight zoom on hover */
+}
+
+.thumbnail-image.selected {
+    border: 2px solid #007BFF; /* Highlight selected thumbnail */
+}
+
+.details-container1 {
+    flex: 3; /* Details take more space */
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Space between elements */
+    padding-left: 20px; /* Spacing for better alignment */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+.product-detail-info1 {
+    text-align: left;
+}
+
+.product-detail-info2 {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between buttons and inputs */
+}
+
+
+.colors .color-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+.colors button{
+    width: 50px;
+    display: grid;
+    place-content: center;
+    padding: 5px;
+}
+
+
+
+
+
+
+
+
+
+@media screen and (max-width: 768px) {
+    .product-detail-modal {
+        width: 100%;
+       
+        height: 100vh;
+        
+    }
+    .product-detail-content{
+        width: 100%;
+        height: 100%;
+
+    }
+
+    .details-container {
+      
+        flex-direction: column; /* Stack images and details on small screens */
+        overflow-y: scroll;
+    }
+
+    .product-detail-main-image {
+        max-height: 300px; /* Smaller image height on mobile */
+    }
+}

@@ -1,18 +1,9 @@
 import React from 'react';
 import ReactStars from 'react-rating-stars-component';
-import useProductDetails from '../hooks/useProductImages';
+import useProductDetails from '../../hooks/useProductImages';
 
 const ProductCard = ({ product, addToCart, setSelectedProduct }) => {
-    console.log("Product prop:", product); // Log the product prop to check its structure
-
-    const productId = product.product_id; // Use product.product_id since that's how your data is structured
-    const { details, loading, error } = useProductDetails(productId); // Use the hook to fetch details
-
-    // Log the fetched details
-    console.log("Product ID:", productId);
-    console.log("Loading state:", loading);
-    console.log("Error state:", error);
-    console.log("Fetched details:", details);
+    const { details, loading, error } = useProductDetails(product.id); // Use the hook to fetch details
 
     const handleCardClick = () => {
         setSelectedProduct(product);
@@ -26,13 +17,9 @@ const ProductCard = ({ product, addToCart, setSelectedProduct }) => {
                         {loading ? (
                             <p>Loading...</p>
                         ) : error ? (
-                            <p>Error loading images: {error.message}</p>
-                        ) : details.images && details.images.length > 0 ? (
-                            <img 
-                                src={details.images[0]} // Correctly accessing the first image URL
-                                alt={product.name} 
-                                className='card-image4' 
-                            />
+                            <p>Error loading images</p>
+                        ) : details.images.length > 0 ? (
+                            <img src={details.images[0].image_url} alt={product.name} className='card-image4' />
                         ) : (
                             <p>No image available</p>
                         )}

@@ -3,22 +3,18 @@ import axios from 'axios';
 
 const useProductDetails = (productId) => {
     const [details, setDetails] = useState({
-        images: [],
         product: {
             id: '',
             name: '',
             price: '',
             description: '',
+            status: '',
             category_name: '',
             subcategory_name: '',
-            sub_subcategory_name: '',
-            timeline_name: '',
-            brand_name: '',
-            color_name: '',
-            material_name: '',
-            sizes: [] // Sizes are now included as labels
+            sizes: [], // Sizes will include both name and category
         },
-        colors: [] // Initialize colors here
+        images: [],
+        colors: []
     });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -30,13 +26,20 @@ const useProductDetails = (productId) => {
                 const response = await axios.get(`http://localhost:4000/api/products/${productId}`);
                 console.log("Fetched Product Data:", response.data);
 
+                // Update the product state mapping based on the API response
                 setDetails({
                     product: {
-                        ...response.data.product,
-                        sizes: response.data.sizes || [] // Ensure sizes are handled properly
+                        id: response.data.product_id,
+                        name: response.data.name,
+                        price: response.data.price,
+                        description: response.data.description,
+                        status: response.data.status,
+                        category_name: response.data.category,
+                        subcategory_name: response.data.subcategory,
+                        sizes: response.data.sizes || [], // Sizes will be an array
                     },
-                    images: response.data.images || [],
-                    colors: response.data.colors || [] // Handle colors properly
+                    images: response.data.images || [], // Images will be an array
+                    colors: response.data.colors || [] // Colors will be an array
                 });
             } catch (err) {
                 console.error("Error fetching product details:", err);

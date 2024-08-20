@@ -10,9 +10,6 @@ const Navbar = ({ toggleSidebar, toggleCart }) => {
       <div className="top-nav-content">
         <h1 className="title">My App</h1>
         <NavLinks />
-        <div className="search-container">
-          <input type="text" placeholder="Search..." className="search-input" />
-        </div>
         <button className="sidebar-toggler" onClick={toggleSidebar}>
           ☰
         </button>

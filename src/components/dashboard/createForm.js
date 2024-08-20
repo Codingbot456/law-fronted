@@ -1,202 +1,253 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import './createForm.css';
 
-// Base URL for your API
-const API_BASE_URL = 'http://localhost:4000'; 
+function CreateForm({ product }) {
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState('');
+  const [description, setDescription] = useState('');
+  const [category, setCategory] = useState('');
+  const [subcategory, setSubcategory] = useState('');
+  const [status, setStatus] = useState('');
+  const [sizes, setSizes] = useState([]);
+  const [colors, setColors] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [statuses, setStatuses] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [images, setImages] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-const CreateProductForm = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        price: '',
-        description: '',
-        category_id: '',
-        subcategory_id: '',
-        status_id: '',
-        size_ids: [],
-        color_ids: [],
-        image_urls: []
-    });
+  useEffect(() => {
+    // Fetch sizes, colors, categories, and statuses
+    axios.get('http://localhost:4000/api/sizes')
+      .then(response => setSizes(response.data))
+      .catch(error => console.error('Error fetching sizes:', error));
+    
+    axios.get('http://localhost:4000/api/colors')
+      .then(response => setColors(response.data))
+      .catch(error => console.error('Error fetching colors:', error));
+    
+    axios.get('http://localhost:4000/api/categories')
+      .then(response => setCategories(response.data))
+      .catch(error => console.error('Error fetching categories:', error));
+    
+    axios.get('http://localhost:4000/api/statuses')
+      .then(response => setStatuses(response.data))
+      .catch(error => console.error('Error fetching statuses:', error));
+  }, []);
 
-    const [categories, setCategories] = useState([]);
-    const [subcategories, setSubcategories] = useState([]);
-    const [statuses, setStatuses] = useState([]);
-    const [sizes, setSizes] = useState([]);
-    const [colors, setColors] = useState([]);
+  useEffect(() => {
+    // Fetch subcategories when category is selected
+    if (category) {
+      axios.get('http://localhost:4000/api/subcategories', { params: { category_id: category } })
+        .then(response => setSubcategories(response.data))
+        .catch(error => console.error('Error fetching subcategories:', error));
+    } else {
+      setSubcategories([]);
+    }
+  }, [category]);
 
-    useEffect(() => {
-        const fetchOptions = async () => {
-            try {
-                const [categoriesRes, subcategoriesRes, statusesRes, sizesRes, colorsRes] = await Promise.all([
-                    axios.get(`${API_BASE_URL}/categories`),
-                    axios.get(`${API_BASE_URL}/subcategories`),
-                    axios.get(`${API_BASE_URL}/statuses`),
-                    axios.get(`${API_BASE_URL}/sizes`),
-                    axios.get(`${API_BASE_URL}/colors`)
-                ]);
+  useEffect(() => {
+    if (product) {
+      // Set form fields with the product data
+      setName(product.name);
+      setPrice(product.price);
+      setDescription(product.description);
+      setCategory(product.category_id);
+      setSubcategory(product.subcategory_id);
+      setStatus(product.status_id);
+      setSelectedSizes(product.size_ids || []);
+      setSelectedColors(product.color_ids || []);
+      setExistingImages(product.images || []);
+    }
+  }, [product]);
 
-                setCategories(categoriesRes.data);
-                setSubcategories(subcategoriesRes.data);
-                setStatuses(statusesRes.data);
-                setSizes(sizesRes.data);
-                setColors(colorsRes.data);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
+  const handleImageChange = (e) => {
+    setImages(e.target.files);
+  };
 
-        fetchOptions();
-    }, []);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('price', price);
+    formData.append('description', description);
+    formData.append('category_id', category);
+    formData.append('subcategory_id', subcategory);
+    formData.append('status_id', status);
+    selectedSizes.forEach(size => formData.append('size_ids[]', size));
+    selectedColors.forEach(color => formData.append('color_ids[]', color));
+    Array.from(images).forEach(image => formData.append('images', image));
 
-    const handleSelectChange = (e) => {
-        const { name, options } = e.target;
-        const selectedValues = Array.from(options)
-            .filter(option => option.selected)
-            .map(option => option.value);
+    try {
+      const url = product ? `http://localhost:4000/api/products/${product.product_id}` : 'http://localhost:4000/api/products';
+      const method = product ? 'put' : 'post';
+      const response = await axios[method](url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log('Product saved:', response.data);
+    } catch (error) {
+      console.error('Error saving product:', error);
+    }
+  };
 
-        setFormData({
-            ...formData,
-            [name]: selectedValues
-        });
-    };
+  if (loading) return <p>Loading...</p>;
 
-    const handleImageAdd = () => {
-        setFormData({
-            ...formData,
-            image_urls: [...formData.image_urls, '']
-        });
-    };
+  return (
+    <div className="form-container">
+      <h2>{product ? 'Update Product' : 'Create New Product'}</h2>
+      <form onSubmit={handleSubmit}>
+        <input 
+          type="text" 
+          value={name} 
+          onChange={(e) => setName(e.target.value)} 
+          placeholder="Product Name" 
+          required 
+        />
+        <input 
+          type="number" 
+          value={price} 
+          onChange={(e) => setPrice(e.target.value)} 
+          placeholder="Price" 
+          required 
+          step="0.01"
+        />
+        <textarea 
+          value={description} 
+          onChange={(e) => setDescription(e.target.value)} 
+          placeholder="Product Description" 
+        />
+        
+        <div>
+          <label>Category:</label>
+          <select 
+            value={category} 
+            onChange={(e) => setCategory(e.target.value)} 
+            required
+          >
+            <option value="">Select Category</option>
+            {categories.map(cat => (
+              <option key={cat.category_id} value={cat.category_id}>{cat.category_name}</option>
+            ))}
+          </select>
+        </div>
+        
+        <div>
+          <label>Subcategory:</label>
+          <select 
+            value={subcategory} 
+            onChange={(e) => setSubcategory(e.target.value)} 
+            required
+          >
+            <option value="">Select Subcategory</option>
+            {subcategories.map(sub => (
+              <option key={sub.subcategory_id} value={sub.subcategory_id}>{sub.subcategory_name}</option>
+            ))}
+          </select>
+        </div>
 
-    const handleImageChange = (index, value) => {
-        const updatedImages = [...formData.image_urls];
-        updatedImages[index] = value;
-        setFormData({
-            ...formData,
-            image_urls: updatedImages
-        });
-    };
+        <div>
+          <label>Status:</label>
+          <select 
+            value={status} 
+            onChange={(e) => setStatus(e.target.value)} 
+            required
+          >
+            <option value="">Select Status</option>
+            {statuses.map(st => (
+              <option key={st.status_id} value={st.status_id}>{st.status_name}</option>
+            ))}
+          </select>
+        </div>
 
-    const handleImageRemove = (index) => {
-        const updatedImages = formData.image_urls.filter((_, i) => i !== index);
-        setFormData({
-            ...formData,
-            image_urls: updatedImages
-        });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await axios.post(`${API_BASE_URL}/products`, formData);
-            alert('Product created successfully!');
-        } catch (error) {
-            console.error('Error creating product:', error);
-            alert('Error creating product');
-        }
-    };
-
-    return (
-        <form onSubmit={handleSubmit}>
-            <div>
-                <label>Name:</label>
-                <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+        <div>
+          <label>Sizes:</label>
+          {sizes.map(size => (
+            <div key={size.size_id}>
+              <input 
+                type="checkbox" 
+                id={`size-${size.size_id}`} 
+                value={size.size_id}
+                checked={selectedSizes.includes(size.size_id)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSelectedSizes([...selectedSizes, size.size_id]);
+                  } else {
+                    setSelectedSizes(selectedSizes.filter(id => id !== size.size_id));
+                  }
+                }}
+              />
+              <label htmlFor={`size-${size.size_id}`}>{size.size_name}</label>
             </div>
-            <div>
-                <label>Price:</label>
-                <input type="number" name="price" value={formData.price} onChange={handleChange} required />
+          ))}
+        </div>
+        
+        <div>
+          <label>Colors:</label>
+          {colors.map(color => (
+            <div key={color.color_id}>
+              <input 
+                type="checkbox" 
+                id={`color-${color.color_id}`} 
+                value={color.color_id}
+                checked={selectedColors.includes(color.color_id)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSelectedColors([...selectedColors, color.color_id]);
+                  } else {
+                    setSelectedColors(selectedColors.filter(id => id !== color.color_id));
+                  }
+                }}
+              />
+              <label htmlFor={`color-${color.color_id}`}>{color.color_name}</label>
             </div>
-            <div>
-                <label>Description:</label>
-                <textarea name="description" value={formData.description} onChange={handleChange} />
-            </div>
-            <div>
-                <label>Category:</label>
-                <select name="category_id" value={formData.category_id} onChange={handleChange}>
-                    <option value="">Select a category</option>
-                    {categories.map(cat => (
-                        <option key={cat.category_id} value={cat.category_id}>
-                            {cat.category_name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div>
-                <label>Subcategory:</label>
-                <select name="subcategory_id" value={formData.subcategory_id} onChange={handleChange}>
-                    <option value="">Select a subcategory</option>
-                    {subcategories.map(sub => (
-                        <option key={sub.subcategory_id} value={sub.subcategory_id}>
-                            {sub.subcategory_name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div>
-                <label>Status:</label>
-                <select name="status_id" value={formData.status_id} onChange={handleChange}>
-                    <option value="">Select a status</option>
-                    {statuses.map(status => (
-                        <option key={status.status_id} value={status.status_id}>
-                            {status.status_name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div>
-                <label>Sizes:</label>
-                <select
-                    name="size_ids"
-                    multiple
-                    value={formData.size_ids}
-                    onChange={handleSelectChange}
-                >
-                    {sizes.map(size => (
-                        <option key={size.size_id} value={size.size_id}>
-                            {size.size_name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div>
-                <label>Colors:</label>
-                <select
-                    name="color_ids"
-                    multiple
-                    value={formData.color_ids}
-                    onChange={handleSelectChange}
-                >
-                    {colors.map(color => (
-                        <option key={color.color_id} value={color.color_id}>
-                            {color.color_name}
-                        </option>
-                    ))}
-                </select>
-            </div>
-            <div>
-                <label>Images:</label>
-                {formData.image_urls.map((url, index) => (
-                    <div key={index}>
-                        <input
-                            type="text"
-                            value={url}
-                            onChange={(e) => handleImageChange(index, e.target.value)}
-                            placeholder="Image URL"
-                        />
-                        <button type="button" onClick={() => handleImageRemove(index)}>Remove</button>
-                    </div>
-                ))}
-                <button type="button" onClick={handleImageAdd}>Add Image</button>
-            </div>
-            <button type="submit">Create Product</button>
-        </form>
-    );
-};
+          ))}
+        </div>
 
-export default CreateProductForm;
+        <div>
+          <label>Images:</label>
+          <input 
+            type="file" 
+            multiple 
+            onChange={handleImageChange} 
+          />
+          {existingImages.length > 0 && (
+            <div className="image-preview">
+              <h4>Existing Images:</h4>
+              {existingImages.map((image, index) => (
+                <img 
+                  key={index} 
+                  src={`http://localhost:4000/images/${image}`} 
+                  alt={`existing-image-${index}`} 
+                  width="100" 
+                  height="100" 
+                />
+              ))}
+            </div>
+          )}
+          {Array.from(images).map((file, index) => (
+            <div key={index} className="image-preview">
+              <img 
+                src={URL.createObjectURL(file)} 
+                alt={`preview-${index}`} 
+                width="100" 
+                height="100" 
+              />
+              <p>{file.name}</p>
+            </div>
+          ))}
+        </div>
+        
+        <button type="submit">{product ? 'Update Product' : 'Create Product'}</button>
+      </form>
+    </div>
+  );
+}
+
+export default CreateForm;

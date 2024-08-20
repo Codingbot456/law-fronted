@@ -1,75 +1,54 @@
-/* createForm.css */
-
-/* General form styles */
-form {
+.form-container {
     max-width: 600px;
     margin: auto;
     padding: 20px;
+    background: #f9f9f9;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #ffffff;
-}
-
-/* Form elements */
-div {
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  input, textarea, select {
     margin-bottom: 15px;
-}
-
-/* Labels */
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #333;
-}
-
-/* Input fields */
-input[type="text"],
-input[type="number"],
-textarea,
-select {
-    width: 100%;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     border-radius: 4px;
-    box-sizing: border-box;
-    font-size: 16px;
-    transition: border-color 0.3s ease;
-}
-
-/* Textarea */
-textarea {
-    resize: vertical;
-    min-height: 100px;
-}
-
-/* Select box for multiple selections */
-select[multiple] {
-    height: 150px;
-}
-
-/* File input */
-input[type="file"] {
-    border: none;
-}
-
-/* Submit button */
-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
+  }
+  
+  input[type="file"] {
+    margin-bottom: 15px;
+  }
+  
+  button {
     padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
     border-radius: 4px;
-    font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-button:hover {
+    font-size: 16px;
+  }
+  
+  button:hover {
     background-color: #0056b3;
-}
-
-/* Add some margin and space for better alignment */
-form > div {
-    margin-bottom: 20px;
-}
+  }
+  
+  .image-preview {
+    display: inline-block;
+    margin-right: 10px;
+  }
+  
+  label {
+    margin-bottom: 5px;
+    display: block;
+  }
+  
+  p {
+    font-style: italic;
+    color: #333;
+  }
+  

@@ -14,9 +14,13 @@ const NavLinks = () => {
       <Link to="/visit" className="link">Blog-Home</Link>
       <Link to="/blog" className="link">Blogging</Link>
       <Link to="/create-post" className="link">Create-blog</Link>
-      <Link to="/update-post" className="link">update-blog</Link>
-      <Link to="/create-product" className="link">Create-product</Link>
+     <Link to="/orders" className="link">Orders</Link>
       <Link to="/men" className="link">Stationary</Link>
+      <Link to="/featured" className="link">Featured</Link>
+      <Link to="/create-product" className='link'>CreateForm</Link>
+      <Link to="/product-list" className='link'>ProductList</Link>
+      
+
       
     </div>
   );

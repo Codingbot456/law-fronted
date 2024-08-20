@@ -1,0 +1,177 @@
+.home-prods4 {
+    border: 0.1px solid #808080;
+    height: auto;
+    margin: 4px;
+    border-radius: 10px;
+    padding-bottom: 80px;
+    position: relative; /* To allow for overlay effect */
+}
+.home-prods4  .card-image4{
+    height: 270px;
+}
+
+.home-prods4 h2 {
+    display: flex;
+    align-items: flex-start;
+  width: auto;
+ 
+}
+.home-prods4
+
+.item-content4 {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+   gap: 50px;
+   flex: 1;
+}
+
+.item-content5 {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    align-items: flex-start;
+    gap: 50px;
+    flex: 1;
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #888 #eee; /* For Firefox */
+}
+
+.item-content5::-webkit-scrollbar {
+    height: 8px; /* Adjust height as needed */
+}
+
+.item-content5::-webkit-scrollbar-track {
+    background: #eee; /* Track color */
+}
+
+.item-content5::-webkit-scrollbar-thumb {
+    background: #888; /* Scrollbar color */
+    border-radius: 10px; /* Rounded corners for the scrollbar */
+}
+
+.item-content5::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Darker color on hover */
+}
+
+
+
+.card-gap4 {
+    display: grid;
+    width: 250px;
+    gap: 20px;
+    border-radius: 10px;
+    border:1px solid grey;
+    box-shadow:  4px 4px 8px rgba(227, 214, 214, 0.3);
+}
+
+.card-info4 {
+    display: grid;
+    place-content: center;
+    gap: 5px;
+    text-align: left;
+    margin-left: 8px;
+  
+   
+    
+   
+}
+.card-info4-4{
+    background-color: white;
+    width: 100%;
+    max-width: 400px;
+}
+.card-info{
+     text-align: left;
+    display: grid;
+    gap: 10px;
+}
+
+
+.new4 .card-image4 {
+    width: 100%;
+}
+
+
+
+.card-info4-4 h6,
+.card-info4-4 h5,
+.card-info4-4 p1 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 20px;
+    display: block; /* Ensure display is block or inline-block */
+    width: 100%; /* Set a fixed width */
+    max-width: 200px; /* Set a fixed width */
+}
+
+.card-abt4 {
+    display: grid;
+}
+.choices{
+    display: flex;
+    flex-direction: column;
+
+}
+.search-input{
+    max-width: 350px;
+    width: 100%;
+    outline: none;
+    border-radius: 30px;
+}
+
+
+
+@media (max-width: 600px) {
+    .home-prods4 {
+        border: none;
+    }
+    .home-prods4  .item-content4 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .home-prods4  .item-content4 .card-image4{
+        height: 180px;
+        object-fit: cover;
+    }
+    .item-content5 {
+        display: grid;
+       grid-auto-flow: column;
+        overflow-x: scroll;
+       align-items: flex-start;
+       
+     }
+     .item-content5 .card-gap4{
+        width: 250px;
+        min-width: auto;
+     }
+     .item-content5 .card-gap4 .card-info4{
+        width: 250px;
+       text-align: left;
+     }
+    .card-gap4 {
+        width: auto;
+        overflow: hidden;
+       
+     
+    }
+    .card-abt4 {
+        width: 100%;
+       }
+    .card-info4{
+        width: 100%;
+    }
+    .card-info4-4 h6,
+.card-info4-4 h5,
+.card-info4-4 p1 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 20px;
+    display: block; /* Ensure display is block or inline-block */
+    width: 100%; /* Set a fixed width */
+    max-width: 160px; /* Set a fixed width */
+}
+}

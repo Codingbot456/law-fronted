@@ -8,6 +8,7 @@ const Home = () => {
     <div >
       <div >
         <BlogList />
+        
       
       </div>
     </div>

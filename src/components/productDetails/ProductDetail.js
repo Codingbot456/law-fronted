@@ -1,64 +1,99 @@
 import React, { useState, useEffect } from 'react';
-import useProductDetails from '../hooks/useProductImages';
+import './product-detail.css';
+import useProductDetails from '../hooks/useProductImages'; // Adjust import as necessary
 
 const ProductDetail = ({ product, onClose, onAddToCart }) => {
     const [quantity, setQuantity] = useState(1);
-    const [selectedColor, setSelectedColor] = useState('#000000'); // Default color or a placeholder
+    const [selectedColor, setSelectedColor] = useState('#000000'); // Default color
     const [selectedSizes, setSelectedSizes] = useState({});
     const { details, loading, error } = useProductDetails(product.id);
     const [selectedImage, setSelectedImage] = useState(null);
 
+    // Log the product details to debug
+    useEffect(() => {
+        console.log("Fetching details for product ID:", product.id);
+        if (details) {
+            console.log("Fetched product details:", details);
+        }
+    }, [details, product.id]);
+
+    // Update selected image when images are loaded
     useEffect(() => {
         if (details.images && details.images.length > 0) {
-            setSelectedImage(details.images[0].image_url);
+            setSelectedImage(details.images[0]); // Set to the first image directly
+            console.log("Selected image set to:", details.images[0]);
         }
     }, [details.images]);
 
+    // If no product is provided, return null
     if (!product) {
         return null;
     }
 
+    // Handle incrementing the quantity
     const handleIncrement = () => {
-        setQuantity(quantity + 1);
+        setQuantity(prevQuantity => {
+            const newQuantity = prevQuantity + 1;
+            console.log("Incremented quantity to:", newQuantity);
+            return newQuantity;
+        });
     };
 
+    // Handle decrementing the quantity
     const handleDecrement = () => {
-        if (quantity > 1) {
-            setQuantity(quantity - 1);
-        }
+        setQuantity(prevQuantity => {
+            const newQuantity = Math.max(prevQuantity - 1, 1); // Ensure quantity doesn't go below 1
+            console.log("Decremented quantity to:", newQuantity);
+            return newQuantity;
+        });
     };
 
+    // Handle selecting a color
     const handleColorSelect = (color) => {
         setSelectedColor(color);
+        console.log("Selected color:", color);
     };
 
+    // Handle selecting a size
     const handleSizeSelect = (size) => {
-        setSelectedSizes(prevSizes => ({
-            ...prevSizes,
-            [size]: (prevSizes[size] || 0) + 1
-        }));
+        setSelectedSizes(prevSizes => {
+            const currentCount = prevSizes[size] || 0;
+            const newSizes = {
+                ...prevSizes,
+                [size]: currentCount + 1,
+            };
+            console.log("Selected sizes updated:", newSizes);
+            return newSizes;
+        });
     };
 
-    // Calculate total price based on selected sizes and their counts
+    // Calculate total price based on selected sizes and quantity
     const totalPrice = details.product.price * quantity + Object.keys(selectedSizes).reduce((total, size) => {
         return total + (details.product.price * selectedSizes[size]);
     }, 0);
+    
+    console.log("Total price calculated:", totalPrice.toFixed(2));
 
+    // Handle adding to cart
     const handleAddToCartClick = () => {
-        const finalImageUrl = selectedImage || (details.images.length > 0 ? details.images[0].image_url : '');
-        onAddToCart({
+        const finalImageUrl = selectedImage || (details.images.length > 0 ? details.images[0] : '');
+        const cartItem = {
             ...details.product,
-            quantity: 1, // Always set quantity to 1 when adding to the cart
-            totalPrice, // Pass total price to the cart
+            quantity: 1,
+            totalPrice,
             selectedColor,
             selectedSizes,
-            image_url: finalImageUrl
-        });
+            image_url: finalImageUrl,
+        };
+        console.log("Adding to cart:", cartItem);
+        onAddToCart(cartItem);
         onClose();
     };
 
+    // Handle image thumbnail click
     const handleImageClick = (image) => {
-        setSelectedImage(image.image_url);
+        setSelectedImage(image); // Update to use image directly
+        console.log("Selected image changed to:", image);
     };
 
     return (
@@ -80,10 +115,10 @@ const ProductDetail = ({ product, onClose, onAddToCart }) => {
                                     {details.images.map((image, index) => (
                                         <img
                                             key={index}
-                                            src={image.image_url}
-                                            alt={image.caption}
-                                            className={`thumbnail-image ${selectedImage === image.image_url ? 'selected' : ''}`}
-                                            onClick={() => handleImageClick(image)}
+                                            src={image} // Use the image URL directly
+                                            alt={`Thumbnail ${index + 1}`}
+                                            className={`thumbnail-image ${selectedImage === image ? 'selected' : ''}`}
+                                            onClick={() => handleImageClick(image)} // Use the image URL directly
                                         />
                                     ))}
                                 </div>
@@ -95,11 +130,7 @@ const ProductDetail = ({ product, onClose, onAddToCart }) => {
                                     <p className='description'>{details.product.description || 'No description available'}</p>
                                     <p><strong>Category:</strong> {details.product.category_name || 'N/A'}</p>
                                     <p><strong>Subcategory:</strong> {details.product.subcategory_name || 'N/A'}</p>
-                                    <p><strong>Sub-Subcategory:</strong> {details.product.sub_subcategory_name || 'N/A'}</p>
-                                    <p><strong>Timeline:</strong> {details.product.timeline_name || 'N/A'}</p>
-                                    <p><strong>Brand:</strong> {details.product.brand_name || 'N/A'}</p>
-                                    <p><strong>Color:</strong> {details.product.color_name || 'N/A'}</p>
-                                    <p><strong>Material:</strong> {details.product.material_name || 'N/A'}</p>
+                                    <p>Status: {details.product?.status || 'N/A'}</p>
                                     <p><strong>Selected Sizes:</strong> {Object.entries(selectedSizes).map(([size, count]) => `${size} (x${count})`).join(', ') || 'None'}</p>
                                     <p><strong>Selected Color:</strong> <span style={{ backgroundColor: selectedColor, padding: '5px 10px', color: '#fff', borderRadius: '4px' }}>{selectedColor}</span></p>
                                     <h5>Total Price: ${totalPrice.toFixed(2)}</h5>
@@ -110,11 +141,11 @@ const ProductDetail = ({ product, onClose, onAddToCart }) => {
                                         {details.product.sizes && details.product.sizes.length > 0 ? (
                                             details.product.sizes.map(size => (
                                                 <button
-                                                    key={size}
-                                                    className={`size-btn ${selectedSizes[size] ? 'selected' : ''}`}
-                                                    onClick={() => handleSizeSelect(size)}
+                                                    key={size.size_name}
+                                                    className={`size-btn ${selectedSizes[size.size_name] ? 'selected' : ''}`}
+                                                    onClick={() => handleSizeSelect(size.size_name)}
                                                 >
-                                                    {size}
+                                                    {size.size_name}
                                                 </button>
                                             ))
                                         ) : (
@@ -127,17 +158,16 @@ const ProductDetail = ({ product, onClose, onAddToCart }) => {
                                         {details.colors && details.colors.length > 0 ? (
                                             details.colors.map(color => (
                                                 <button
-                                                    key={color}
-                                                    className={`color-btn ${selectedColor === color ? 'selected' : ''}`}
-                                                    style={{ backgroundColor: color }}
-                                                    onClick={() => handleColorSelect(color)}
+                                                    key={color.color_name}
+                                                    className={`color-btn ${selectedColor === color.color_name ? 'selected' : ''}`}
+                                                    style={{ backgroundColor: color.color_name }}
+                                                    onClick={() => handleColorSelect(color.color_name)}
                                                 >
-                                                    {color}
+                                                    {color.color_name}
                                                 </button>
                                             ))
-
                                         ) : (
-                                            <p>No color available</p>
+                                            <p>No colors available</p>
                                         )}
                                         </div>
                                     </div>

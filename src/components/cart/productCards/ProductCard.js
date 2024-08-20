@@ -1,10 +1,9 @@
 import React from 'react';
 import ReactStars from 'react-rating-stars-component';
-import useProductDetails from '../hooks/useProductImages';
+import useProductDetails from '../../hooks/useProductImages'; // Import the custom hook
 
 const ProductCard = ({ product, addToCart, setSelectedProduct }) => {
-    const productId = product.product_id; // Assuming `product_id` is used in the hook
-    const { details, loading, error } = useProductDetails(productId); // Use the hook to fetch details
+    const { details, loading, error } = useProductDetails(product.id); // Use the hook to fetch details
 
     const handleCardClick = () => {
         setSelectedProduct(product);
@@ -18,13 +17,9 @@ const ProductCard = ({ product, addToCart, setSelectedProduct }) => {
                         {loading ? (
                             <p>Loading...</p>
                         ) : error ? (
-                            <p>Error loading images: {error.message}</p> // Ensure error message is displayed
-                        ) : details.images && details.images.length > 0 ? (
-                            <img
-                                src={details.images[0]} // Correctly accessing the first image URL
-                                alt={product.name || "Product Image"} // Default alt text for better accessibility
-                                className='card-image3'
-                            />
+                            <p>Error loading images</p>
+                        ) : details.images.length > 0 ? (
+                            <img src={details.images[0].image_url} alt={product.name} className='card-image3' />
                         ) : (
                             <p>No image available</p>
                         )}
@@ -32,7 +27,7 @@ const ProductCard = ({ product, addToCart, setSelectedProduct }) => {
                     <div className='card-info3'>
                         <div className='card-info3-3'>
                             <h6>{product.name}</h6>
-                            <p>{product.description}</p> {/* Use <p> instead of <p1> for standard HTML */}
+                            <p1>{product.description}</p1>
                             <h5>Price: ${product.price}</h5>
                         </div>
                         <div className="transparent-background">

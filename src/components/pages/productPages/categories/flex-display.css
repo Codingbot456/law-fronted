@@ -1,0 +1,169 @@
+.home-prods3 {
+    border: .1px solid #808080;
+    height: auto;
+    border-radius: 10px;
+    padding-bottom: 40px;
+    position: relative; /* To allow for overlay effect */
+}
+
+.home-prods3 h2 {
+    display: flex;
+    align-items: flex-start;
+  width: auto;
+ 
+}
+
+.item-content3 {
+   
+    height: auto;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 80px;
+    column-gap: 30px;
+}
+.new{
+  background-color: white;
+ cursor: pointer;
+    scale: 1.008;
+    transition: .3s ease;
+    box-shadow: inset;
+    letter-spacing: 1px;
+    word-spacing: 1px;
+}
+
+
+
+.new .card {
+    height: 100%;
+    display: grid;
+  
+  
+   
+}
+
+
+.card-gap3 {
+    display: flex;
+    align-items: center;
+   justify-content: center;
+    gap: 20px;
+    border-radius: 10px;
+    background-color: white;
+    border: .3px solid grey;
+    width: 400px;
+    overflow: hidden;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    
+   
+   
+}
+
+.card-info3 {
+  display: grid;
+  gap: 2px;
+  
+   
+}
+
+.card-info3-3 h6,
+.card-info3-3 h5,
+.card-info3-3 p1 {
+   
+    
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 20px;
+    display: block; /* Ensure display is block or inline-block */
+    width: 160px; /* Set a fixed width */
+}
+
+
+
+/* src/components/RatingComponent.css */
+.transparent-background {
+    background-color: transparent;
+    
+}
+
+
+.card-abt3 {
+    height: 100%;
+    width: 200px;
+    flex: 1;
+   
+}
+
+.card-image3 {
+    margin:0;
+   height: 200px;
+   width: 200px;
+   flex:1;
+    border-radius: 10px 0 0 10px;
+}
+.absolutePosition{
+    position: absolute;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    background-color:  #F56565;;
+    color: white;
+    font-size: bolder;
+    border-radius: 3px;
+    display: grid;
+    place-content: center;
+    left: 0;
+    padding: 0;
+}
+
+
+@media (max-width: 600px) {
+    .home-prods3 {
+        border: none;
+        padding: 20px;
+    }
+
+   
+    .item-content3 {
+        display: grid;
+        grid-auto-flow: row;
+        gap: 40px;
+    }
+ 
+    .card-info3 {
+       
+        height: auto;
+       
+    }
+    .card-gap3 {
+    
+        max-width: 350px;
+       
+       
+
+    }
+    .card-abt3 {
+       
+       width: auto;
+       height: auto;
+       border-radius: 0 0 -10px -10px;
+      
+    }
+    .card-image3 {
+    
+        object-fit: cover;
+
+       
+    }
+    
+    
+    
+}
+
+/* Added styles for overlay effect within home-prods3 */

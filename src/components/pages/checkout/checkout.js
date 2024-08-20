@@ -14,33 +14,44 @@ const CheckoutForm = () => {
     city: '',
     state: '',
     zip_code: '',
-    items: cartItems.map(item => ({
-      product_id: item.id,
-      name: item.name,
-      quantity: item.quantity,
-      subtotal_price: item.totalPrice,
-      image_url: item.image_url
-    })),
-    source: localStorage.getItem('source') || 'unknown' // Get source from localStorage
+    items: [],
+    source: localStorage.getItem('source') || 'unknown',
   });
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
+  // Effect to set the items when cartItems change
+  useEffect(() => {
+    const items = cartItems.map((item) => ({
+      product_id: item.product_id,
+      name: item.name,
+      quantity: item.quantity,
+      totalPrice: Number(item.totalPrice), // Use totalPrice from cartItems
+      selectedColor: item.selectedColor || null, // Ensure selectedColor is passed
+      selectedSizes: JSON.stringify(item.selectedSizes) || null, // Stringify selectedSizes for backend
+      image_url: item.image_url,
+      subtotal_price: (item.quantity * Number(item.totalPrice)).toFixed(2), // Calculate subtotal
+    }));
+    setFormData((prev) => ({ ...prev, items }));
+    console.log('Checkout initiated with items:', items); // Log items for debugging
+  }, [cartItems]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
     setErrorMessage('');
 
-    const total_price = formData.items.reduce((total, item) => total + item.subtotal_price, 0);
+    const total_price = calculateTotalPrice(); // Calculate total price
     const order_date = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
     const dataToSend = { ...formData, total_price, order_date };
+    console.log('Preparing to create order with the following details:', dataToSend); // Log data to send
 
     try {
       const response = await axios.post('http://localhost:4000/api/orders/', dataToSend, {
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
 
       if (response.status !== 201) {
@@ -48,9 +59,11 @@ const CheckoutForm = () => {
       }
 
       const data = await response.data;
+      console.log('Order created successfully:', data); // Log response from the server
       navigate('/payment', { state: { formData: dataToSend } });
     } catch (error) {
       setErrorMessage('Error creating order: ' + error.message);
+      console.error('Error creating order:', error); // Log the error
     } finally {
       setIsLoading(false);
     }
@@ -61,8 +74,11 @@ const CheckoutForm = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  // Calculate the total price for all items in the cart
   const calculateTotalPrice = () => {
-    return formData.items.reduce((total, item) => total + item.subtotal_price, 0).toFixed(2);
+    const total = cartItems.reduce((sum, item) => sum + Number(item.totalPrice), 0);
+    console.log('Total price calculated:', total); // Log total price
+    return total.toFixed(2);
   };
 
   return (
@@ -100,7 +116,7 @@ const CheckoutForm = () => {
           </label>
         </div>
 
-        <div className="order-form1">
+        <div className="order-summary">
           <h3>Your Items:</h3>
           {formData.items.map((item, index) => (
             <div key={index} className="item-summary">
@@ -108,11 +124,21 @@ const CheckoutForm = () => {
               <div>
                 <p>{item.name}</p>
                 <p>Quantity: {item.quantity}</p>
-                <p>Subtotal Price: ${item.subtotal_price.toFixed(2)}</p>
+                <p>Selected Color: {item.selectedColor || 'N/A'}</p>
+                
+                {/* Render selected_sizes properly */}
+                <p>Selected Sizes: {item.selectedSizes ? (
+                  Object.entries(JSON.parse(item.selectedSizes)).map(([size, count]) => (
+                    <span key={size}>{size}: {count} </span>
+                  ))
+                ) : 'N/A'}</p>
+
+                <p>Subtotal Price: ${item.subtotal_price}</p>
               </div>
             </div>
           ))}
 
+          {/* Display only the total price */}
           <div className="total-price">
             <h3>Total Price: ${calculateTotalPrice()}</h3>
           </div>
