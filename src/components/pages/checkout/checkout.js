@@ -14,13 +14,30 @@ const CheckoutForm = () => {
     city: '',
     state: '',
     zip_code: '',
+    county_id: '', // Added
     items: [],
     source: localStorage.getItem('source') || 'unknown',
   });
 
+  const [counties, setCounties] = useState([]);
+  const [shippingFee, setShippingFee] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
+
+  // Fetch counties from backend
+  useEffect(() => {
+    const fetchCounties = async () => {
+      try {
+        const response = await axios.get('http://localhost:4000/api/orders/counties');
+        setCounties(response.data);
+      } catch (error) {
+        console.error('Error fetching counties:', error);
+      }
+    };
+
+    fetchCounties();
+  }, []);
 
   // Effect to set the items when cartItems change
   useEffect(() => {
@@ -37,6 +54,15 @@ const CheckoutForm = () => {
     setFormData((prev) => ({ ...prev, items }));
     console.log('Checkout initiated with items:', items); // Log items for debugging
   }, [cartItems]);
+
+  // Update shipping fee when county changes
+  useEffect(() => {
+    if (formData.county_id) {
+      const county = counties.find(c => c.id === parseInt(formData.county_id));
+      // Convert shipping fee to number before setting it
+      setShippingFee(county ? Number(county.shipping_fee) : 0);
+    }
+  }, [formData.county_id, counties]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -76,10 +102,14 @@ const CheckoutForm = () => {
 
   // Calculate the total price for all items in the cart
   const calculateTotalPrice = () => {
-    const total = cartItems.reduce((sum, item) => sum + Number(item.totalPrice), 0);
+    const productTotal = cartItems.reduce((sum, item) => sum + Number(item.totalPrice), 0);
+    const total = productTotal + Number(shippingFee);
     console.log('Total price calculated:', total); // Log total price
-    return total.toFixed(2);
+    return total.toFixed(2); // Format as a string with 2 decimal places
   };
+
+  // Ensure shippingFee is a number before calling toFixed
+  const shippingFeeFormatted = Number(shippingFee).toFixed(2);
 
   return (
     <div className="checkout-container">
@@ -114,6 +144,17 @@ const CheckoutForm = () => {
             Zip Code:
             <input type="text" name="zip_code" value={formData.zip_code} onChange={handleChange} required />
           </label>
+          <label>
+            County:
+            <select name="county_id" value={formData.county_id} onChange={handleChange} required>
+              <option value="">Select your county</option>
+              {counties.map(county => (
+                <option key={county.id} value={county.id}>
+                  {county.name}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
 
         <div className="order-summary">
@@ -125,22 +166,19 @@ const CheckoutForm = () => {
                 <p>{item.name}</p>
                 <p>Quantity: {item.quantity}</p>
                 <p>Selected Color: {item.selectedColor || 'N/A'}</p>
-                
-                {/* Render selected_sizes properly */}
                 <p>Selected Sizes: {item.selectedSizes ? (
                   Object.entries(JSON.parse(item.selectedSizes)).map(([size, count]) => (
                     <span key={size}>{size}: {count} </span>
                   ))
                 ) : 'N/A'}</p>
-
                 <p>Subtotal Price: ${item.subtotal_price}</p>
               </div>
             </div>
           ))}
 
-          {/* Display only the total price */}
           <div className="total-price">
-            <h3>Total Price: ${calculateTotalPrice()}</h3>
+            <h3>Shipping Fee: ${shippingFeeFormatted}</h3>
+            <h3>Total Price (including shipping): ${calculateTotalPrice()}</h3>
           </div>
           {errorMessage && <p className="error-message">{errorMessage}</p>}
           <button type="submit" disabled={isLoading}>
