@@ -1,3 +1,4 @@
+// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './components/context/CartContext';
@@ -9,6 +10,7 @@ import './App.css';
 import Navbar from './components/navbar/navs/navbar/Navbar';
 import Sidebar from './components/navbar/navs/Navside/Sidebar';
 import BottomNavbar from './components/navbar/navs/Navside/BottomNavbar';
+import Footer from './components/footer/Footer';
 import Cart from './components/pages/cart/cart'; // Update to match your directory structure
 import CartBuy from './components/cart/CartBuy';
 import NavRoutes from './components/routes/NavRoutes'; // Assuming this component contains its own Routes logic
@@ -65,6 +67,7 @@ const App = () => {
               </main>
               <BottomNavbar toggleCart={toggleCart} />
               {isCartVisible && <Cart closeCart={closeCart} />}
+              <Footer /> {/* Include the Footer component here */}
             </div>
           </Router>
         </CartProvider>

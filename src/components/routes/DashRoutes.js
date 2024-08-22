@@ -1,18 +1,19 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom'; // Import Routes and Route
-import CreateForm from '../dashboard/createForm'; // Correct path
-import OrderList from '../dashboard/OrderList';
-import PaymentForm from '../pages/Payments/Pay';
+import { Route, Routes } from 'react-router-dom';
+import CreateForm from '../dashboard/createForm';
+import OrdersList from '../dashboard/OrderList';
 import ProductList from '../dashboard/ProductList';
+import DashHome from '../dashboard/Dash-home';
 
 const DashRoutes = () => {
   return (
     <Routes>
-      <Route path="/payment" element={<PaymentForm />} />
-       <Route path="/orders" element={<OrderList />} />
-      <Route path="/create-product" element={<CreateForm />} />
-      <Route path="/product-list" element={<ProductList />} />
-
+      <Route path="/dash-home" element={<DashHome />}>
+        <Route index element={<OrdersList />} /> {/* Default view */}
+        <Route path="create-product" element={<CreateForm />} />
+        <Route path="product-list" element={<ProductList />} />
+        <Route path="orders" element={<OrdersList />} />
+      </Route>
     </Routes>
   );
 };

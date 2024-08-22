@@ -1,0 +1,16 @@
+/* LocationPage.css */
+.location-page {
+    padding: 2rem;
+  }
+  
+  .location-section h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+  }
+  
+  .location-section p {
+    font-size: 1rem;
+    color: var(--text-color);
+  }
+  

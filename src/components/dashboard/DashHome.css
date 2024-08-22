@@ -1,0 +1,90 @@
+
+
+/* Specific styles for DashHome component */
+.dash-home-container {
+  padding: 20px;
+  background-color: var(--background-color);
+  display: flex;
+}
+
+.dash-home-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dash-home-nav {
+  flex-shrink: 0;
+  width: 200px; /* Adjust width as needed */
+}
+
+.dash-home-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text-color);
+  margin-bottom: 20px;
+}
+
+.dash-home-orders,
+.dash-home-create-form,
+.dash-home-product-list {
+  border: 1px solid var(--border-color);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.dash-home-orders {
+  background-color: #f9f9f9;
+}
+
+.dash-home-create-form {
+  background-color: #fff;
+}
+
+.dash-home-product-list {
+  background-color: #f9f9f9;
+}
+
+button {
+  font-family: 'Roboto', sans-serif;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.primary-button {
+  background-color: var(--primary-color);
+  color: #FFFFFF;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.primary-button:hover {
+  background-color: #002244;
+}
+
+.secondary-button {
+  background-color: var(--secondary-color);
+  color: #FFFFFF;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.secondary-button:hover {
+  background-color: #003300;
+}
+
+.accent-button {
+  background-color: var(--accent-color);
+  color: #FFFFFF;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.accent-button:hover {
+  background-color: #66001a;
+}

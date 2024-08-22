@@ -1,34 +1,21 @@
-/* Basic Reset and Global Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Roboto', sans-serif;
-  color: var(--text-color);
-  background-color: var(--background-color);
-}
 
 /* Top Navbar */
 .top-nav {
   background-color: var(--primary-color);
   display: flex;
   justify-content: space-between;
-  align-items: center;
   color: #fff;
   padding: 0.5rem 1rem;
-  position: fixed;
   width: 100%;
   top: 0;
+  position: sticky;
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .top-nav-content {
   display: flex;
-  justify-content: center;
+ 
   gap: 130px;
   width: 100%;
   margin: 0 auto;
@@ -184,8 +171,8 @@ body {
   background-color: var(--primary-color);
   color: #fff;
   padding: 0.5rem;
-  position: fixed;
   width: 100%;
+  position: fixed;
   bottom: 0;
   display: flex;
   justify-content: space-around;
@@ -219,10 +206,9 @@ body {
 @media (max-width: 768px) {
   .top-nav-content {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
     align-items: center;
     width: 100%;
+   
   }
 
   .search-container {

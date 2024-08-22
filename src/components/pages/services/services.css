@@ -1,0 +1,22 @@
+/* ServicesPage.css */
+.services-page {
+    padding: 2rem;
+  }
+  
+  .services-section h2 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+  }
+  
+  .services-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .services-section li {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    color: var(--text-color);
+  }
+  
