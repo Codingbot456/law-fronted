@@ -1,4 +1,3 @@
-// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './components/context/CartContext';
@@ -16,7 +15,7 @@ import CartBuy from './components/cart/CartBuy';
 import NavRoutes from './components/routes/NavRoutes'; // Assuming this component contains its own Routes logic
 import PageRoutes from './components/routes/PageRoutes'; 
 import BlogRoutes from './components/routes/BlogRoutes'; 
-import ProductRoutes from './components/routes/productRoutes'; 
+import ProductRoutes from './components/routes/productRoutes';
 import OtherRoutes from './components/routes/OtherRoutes';
 import DashRoutes from './components/routes/DashRoutes';
 

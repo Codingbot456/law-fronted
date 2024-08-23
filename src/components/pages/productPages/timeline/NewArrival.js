@@ -5,15 +5,15 @@ import { SearchContext } from '../../../context/searchContext';
 import { CartContext } from '../../../context/CartContext';
 import Filter from '../../../filters/filters';
 import CartBuy from '../../../cart/CartBuy';
-import ProductCard from '../../../productCards/ProductCard-grid';
-import "./all.css";
-import "./grid-display.css";
+import ProductCard from '../../../productCards/ProductCard';
+import "../categories/all.css";
+import "../categories/flex-display.css";
 import sortProducts from '../../../../utils/sortProducts';
 import filterProducts from '../../../../utils/filterProducts';
 import useWindowResize from '../../../hooks/useWindowResize';
 import { CiFilter } from "react-icons/ci";
 
-const Men = () => {
+const NewArrival = () => {
   const [products, setProducts] = useState([]);
   const [filters, setFilters] = useState({});
   const [showFilters, setShowFilters] = useState(false);
@@ -28,7 +28,7 @@ const Men = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/products/category/1'); // Adjust endpoint URL as needed
+        const response = await axios.get('http://localhost:4000/api/products/status/4'); // Adjust endpoint URL as needed
         setProducts(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -104,7 +104,7 @@ const Men = () => {
 
         <div className='all-prods'> 
           <div className={`home-prods4 ${selectedProduct ? 'dimmed' : ''}`}>
-            <h2>Men Fashion  Wear</h2>
+            <h2>NewArrival</h2>
             <input
               type="text"
               placeholder="Search products..."
@@ -143,4 +143,4 @@ const Men = () => {
   );
 };
 
-export default Men;
+export default NewArrival;

@@ -10,6 +10,7 @@ const SubmissionList = () => {
   const [filteredSubmissions, setFilteredSubmissions] = useState([]);
   const [error, setError] = useState('');
   const [showAnswerForm, setShowAnswerForm] = useState(null);
+  const [detailsVisible, setDetailsVisible] = useState({});
 
   useEffect(() => {
     const fetchSubmissions = async () => {
@@ -48,9 +49,16 @@ const SubmissionList = () => {
     }
   };
 
+  const toggleDetails = (id) => {
+    setDetailsVisible(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
+
   return (
     <div className="form-container">
-      <h2 className="form-header">Submission List</h2>
+      <h2 className="form-header">Projects</h2>
       {error && <span className="error-message">{error}</span>}
       <div className="button-group">
         <button onClick={() => handleFilter('all')} className="highlight-button">All</button>
@@ -61,25 +69,34 @@ const SubmissionList = () => {
       <ul className="submission-list">
         {filteredSubmissions.map((submission) => (
           <li key={submission.id} className="submission-item">
-            <h3 className="submission-title">{submission.question || 'No title'}</h3>
-            <p><strong>Type:</strong> {submission.type}</p>
-            <p><strong>Minimum Words:</strong> {submission.minWords}</p>
-            <p><strong>Is Urgent:</strong> {submission.isUrgent ? 'Yes' : 'No'}</p>
+            <h3 className="submission-title">
+              {submission.question}
+              {submission.isUrgent && ' (Urgent)'}
+            </h3>
             <p><strong>Budget:</strong> ${submission.budget}</p>
-            <p><strong>Category:</strong> {submission.category}</p>
-            {submission.attachments && submission.attachments.length > 0 && (
-              <div>
-                <strong>Attachments:</strong>
-                <ul className="attachment-list">
-                  {parseAttachments(submission.attachments).map((file, index) => (
-                    <li key={index}>
-                      <a href={`http://localhost:4000/uploads/${file}`} target="_blank" rel="noopener noreferrer">
-                        {file}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            {detailsVisible[submission.id] ? (
+              <>
+                <p><strong>Type:</strong> {submission.type}</p>
+                <p><strong>Minimum Words:</strong> {submission.minWords}</p>
+                <p><strong>Category:</strong> {submission.category}</p>
+                {submission.attachments && submission.attachments.length > 0 && (
+                  <div>
+                    <strong>Attachments:</strong>
+                    <ul className="attachment-list">
+                      {parseAttachments(submission.attachments).map((file, index) => (
+                        <li key={index}>
+                          <a href={`http://localhost:4000/uploads/${file}`} target="_blank" rel="noopener noreferrer">
+                            {file}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                <button onClick={() => toggleDetails(submission.id)} className="highlight-button">Hide Details</button>
+              </>
+            ) : (
+              <button onClick={() => toggleDetails(submission.id)} className="highlight-button">Show Details</button>
             )}
             {role === 'tutor' || role === 'admin' ? (
               <>

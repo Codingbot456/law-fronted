@@ -1,18 +1,19 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { SearchContext } from '../../context/searchContext';
-import { CartContext } from '../../context/CartContext';
-import Filter from '../../components/filters/filters';
-import CartBuy from '../../components/cart/CartBuy';
-import ProductCard from '../../components/productCards/ProductCard-grid';
-import "./all.css";
-import sortProducts from '../../utils/sortProducts';
-import filterProducts from '../../utils/filterProducts';
-import useWindowResize from '../../hooks/useWindowResize';
+import { SearchContext } from '../../../context/searchContext';
+import { CartContext } from '../../../context/CartContext';
+import Filter from '../../../filters/filters';
+import CartBuy from '../../../cart/CartBuy';
+import ProductCard from '../../../productCards/ProductCard';
+import "../categories/all.css";
+import "../categories/flex-display.css";
+import sortProducts from '../../../../utils/sortProducts';
+import filterProducts from '../../../../utils/filterProducts';
+import useWindowResize from '../../../hooks/useWindowResize';
 import { CiFilter } from "react-icons/ci";
 
-const Women = () => {
+const  OfficeSupplies= () => {
   const [products, setProducts] = useState([]);
   const [filters, setFilters] = useState({});
   const [showFilters, setShowFilters] = useState(false);
@@ -27,7 +28,7 @@ const Women = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/products/category/3'); // Adjust endpoint URL as needed
+        const response = await axios.get('http://localhost:4000/api/products/category/5'); // Adjust endpoint URL as needed
         setProducts(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -103,7 +104,7 @@ const Women = () => {
 
         <div className='all-prods'> 
           <div className={`home-prods4 ${selectedProduct ? 'dimmed' : ''}`}>
-            <h2>Women Fashion Clothes</h2>
+            <h2>OfficeSupplies</h2>
             <input
               type="text"
               placeholder="Search products..."
@@ -142,4 +143,4 @@ const Women = () => {
   );
 };
 
-export default Women;
+export default OfficeSupplies;

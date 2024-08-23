@@ -7,7 +7,7 @@ function DashHome() {
   return (
     <div className="dash-home-container">
       <div className="dash-home-nav">
-      
+      <DashNav/>
       </div>
       <div className="dash-home-content">
         <Outlet /> {/* Render the matched child route */}

@@ -1,19 +1,19 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { SearchContext } from '../../context/searchContext';
-import { CartContext } from '../../context/CartContext';
-import Filter from '../../components/filters/filters';
-import CartBuy from '../../components/cart/CartBuy';
-import ProductCard from '../../components/productCards/ProductCard-grid';
-import "./all.css";
-import sortProducts from '../../utils/sortProducts';
-import filterProducts from '../../utils/filterProducts';
-import useWindowResize from '../../hooks/useWindowResize';
+import { SearchContext } from '../../../context/searchContext';
+import { CartContext } from '../../../context/CartContext';
+import Filter from '../../../filters/filters';
+import CartBuy from '../../../cart/CartBuy';
+import ProductCard from '../../../productCards/ProductCard';
+import "../categories/all.css";
+import "../categories/flex-display.css";
+import sortProducts from '../../../../utils/sortProducts';
+import filterProducts from '../../../../utils/filterProducts';
+import useWindowResize from '../../../hooks/useWindowResize';
 import { CiFilter } from "react-icons/ci";
-import '../../products/grid-display.css'
 
-const Subs = () => {
+const Gadgets = () => {
   const [products, setProducts] = useState([]);
   const [filters, setFilters] = useState({});
   const [showFilters, setShowFilters] = useState(false);
@@ -28,7 +28,7 @@ const Subs = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/products/timeline/3'); // Adjust endpoint URL as needed
+        const response = await axios.get('http://localhost:4000/api/products/category/4'); // Adjust endpoint URL as needed
         setProducts(response.data);
       } catch (error) {
         console.error('Error fetching products:', error);
@@ -74,6 +74,21 @@ const Subs = () => {
 
   return (
     <div className='all'>
+      <div className='filters' style={{ display: isMobile && !showFilters ? 'none' : 'block' }}>
+        <div className='filter-actions'>
+          <div className='all-nav'>
+            <ul>
+              <li><Link to="/">Home</Link></li>
+              <li><Link to="/cart">Cart</Link></li>
+            </ul>
+          </div>
+          <h3>Filters</h3>
+          <div>
+            <Filter onFilterChange={handleFilterChange} />
+          </div>
+          {isMobile && <button className='close-toggle' onClick={closeFilters}>Close Filters</button>}
+        </div>
+      </div>
 
       <div className='all-items'>
         <div className='sort'>
@@ -89,8 +104,15 @@ const Subs = () => {
 
         <div className='all-prods'> 
           <div className={`home-prods4 ${selectedProduct ? 'dimmed' : ''}`}>
-            <h2>Most Featured Wear</h2>
-            <div className="item-content5">
+            <h2>Gadgets</h2>
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="search-input"
+            />
+            <div className="item-content4">
               {filteredAndSortedProducts.length > 0 ? (
                 filteredAndSortedProducts.map((product, index) => (
                   <ProductCard
@@ -121,4 +143,4 @@ const Subs = () => {
   );
 };
 
-export default Subs;
+export default Gadgets;

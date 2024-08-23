@@ -1,25 +1,45 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { CartContext } from '../../context/CartContext';
-import Filter from '../../components/filters/filters';
-import CartBuy from '../../components/cart/CartBuy';
-import ProductCard from '../../components/productCards/ProductCard-grid';
+import axios from 'axios';
+import { SearchContext } from '../../../context/searchContext';
+import { CartContext } from '../../../context/CartContext';
+import Filter from '../../../filters/filters';
+import CartBuy from '../../../cart/CartBuy';
+import ProductCard from '../../../productCards/ProductCard-grid';
 import "./all.css";
-import trendInit from '../../components/assets/productImages/TrendInit';
-import sortProducts from '../../utils/sortProducts';
-import  filterProducts  from '../../utils/filterProducts';
-import useWindowResize from '../../hooks/useWindowResize';
+import "./grid-display.css";
+import sortProducts from '../../../../utils/sortProducts';
+import filterProducts from '../../../../utils/filterProducts';
+import useWindowResize from '../../../hooks/useWindowResize';
+import { CiFilter } from "react-icons/ci";
 
-const Features = () => {
+const Apparel = () => {
+  const [products, setProducts] = useState([]);
   const [filters, setFilters] = useState({});
   const [showFilters, setShowFilters] = useState(false);
   const [sortOption, setSortOption] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const isMobile = useWindowResize();
   const { addToCart } = useContext(CartContext);
-
-  const [products] = useState(trendInit);
-  const [searchQuery, setSearchQuery] = useState('');
+  const { searchQuery, handleSearchChange } = useContext(SearchContext);
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('http://localhost:4000/api/products/category/2'); // Adjust endpoint URL as needed
+        setProducts(response.data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setError('There was an error fetching the products.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleFilterChange = (newFilters) => {
     setFilters(newFilters);
@@ -40,16 +60,19 @@ const Features = () => {
   const filteredProducts = products.filter(product => filterProducts(product, filters, searchQuery));
   const filteredAndSortedProducts = sortProducts(filteredProducts, sortOption);
 
-  const handleSearchChange = (query) => {
-    setSearchQuery(query);
-  };
-
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
   };
 
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
-    
     <div className='all'>
       <div className='filters' style={{ display: isMobile && !showFilters ? 'none' : 'block' }}>
         <div className='filter-actions'>
@@ -69,7 +92,7 @@ const Features = () => {
 
       <div className='all-items'>
         <div className='sort'>
-          {isMobile && <button className='toggle' onClick={toggleFilters}>Open Filters</button>}
+          {isMobile &&  <CiFilter  className='toggle' onClick={toggleFilters}/> }
           <select className='sorts' onChange={handleSortChange}>
             <option value="">Sort Products</option>
             <option value="newest">Newest</option>
@@ -81,7 +104,7 @@ const Features = () => {
 
         <div className='all-prods'> 
           <div className={`home-prods4 ${selectedProduct ? 'dimmed' : ''}`}>
-            <h2>Our Featured Clothes</h2>
+            <h2>Apparel</h2>
             <input
               type="text"
               placeholder="Search products..."
@@ -120,4 +143,4 @@ const Features = () => {
   );
 };
 
-export default Features;
+export default Apparel;
