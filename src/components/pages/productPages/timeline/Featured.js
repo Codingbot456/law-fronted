@@ -103,7 +103,7 @@ const Featured = () => {
         </div>
 
         <div className='all-prods'> 
-          <div className={`home-prods4 ${selectedProduct ? 'dimmed' : ''}`}>
+          <div className={`home-prods3 ${selectedProduct ? 'dimmed' : ''}`}>
             <h2>Trending Products</h2>
             <input
               type="text"
@@ -112,7 +112,7 @@ const Featured = () => {
               onChange={(e) => handleSearchChange(e.target.value)}
               className="search-input"
             />
-            <div className="item-content4">
+            <div className="item-content3">
               {filteredAndSortedProducts.length > 0 ? (
                 filteredAndSortedProducts.map((product, index) => (
                   <ProductCard

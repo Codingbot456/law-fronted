@@ -156,8 +156,8 @@ const CartBuy = ({ product, onClose, onAddToCart }) => {
                         <button onClick={handleIncrement} className="quantity-btn">+</button>
                     </div>
                     <div className='cart-actions'>
-                        <button onClick={handleAddToCartClick} className="secondary">Add to Cart</button>
-                        <button onClick={handleViewDetailsClick} className='primary'>View Details</button>
+                        <button onClick={handleAddToCartClick} className="primary-button">Add to Cart</button>
+                        <button onClick={handleViewDetailsClick} className='accent-button'>View Details</button>
                     </div>
                 </div>
             </div>

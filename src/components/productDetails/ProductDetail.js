@@ -9,72 +9,31 @@ const ProductDetail = ({ product, onClose, onAddToCart }) => {
     const { details, loading, error } = useProductDetails(product.id);
     const [selectedImage, setSelectedImage] = useState(null);
 
-    // Log the product details to debug
     useEffect(() => {
-        console.log("Fetching details for product ID:", product.id);
-        if (details) {
-            console.log("Fetched product details:", details);
+        if (details && details.images && details.images.length > 0) {
+            setSelectedImage(details.images[0]);
         }
-    }, [details, product.id]);
+    }, [details]);
 
-    // Update selected image when images are loaded
-    useEffect(() => {
-        if (details.images && details.images.length > 0) {
-            setSelectedImage(details.images[0]); // Set to the first image directly
-            console.log("Selected image set to:", details.images[0]);
-        }
-    }, [details.images]);
-
-    // If no product is provided, return null
     if (!product) {
         return null;
     }
 
-    // Handle incrementing the quantity
-    const handleIncrement = () => {
-        setQuantity(prevQuantity => {
-            const newQuantity = prevQuantity + 1;
-            console.log("Incremented quantity to:", newQuantity);
-            return newQuantity;
-        });
+    const handleIncrement = () => setQuantity(prev => prev + 1);
+    const handleDecrement = () => setQuantity(prev => Math.max(prev - 1, 1));
+
+    const handleColorSelect = color => setSelectedColor(color);
+    const handleSizeSelect = size => {
+        setSelectedSizes(prev => ({
+            ...prev,
+            [size]: (prev[size] || 0) + 1
+        }));
     };
 
-    // Handle decrementing the quantity
-    const handleDecrement = () => {
-        setQuantity(prevQuantity => {
-            const newQuantity = Math.max(prevQuantity - 1, 1); // Ensure quantity doesn't go below 1
-            console.log("Decremented quantity to:", newQuantity);
-            return newQuantity;
-        });
-    };
-
-    // Handle selecting a color
-    const handleColorSelect = (color) => {
-        setSelectedColor(color);
-        console.log("Selected color:", color);
-    };
-
-    // Handle selecting a size
-    const handleSizeSelect = (size) => {
-        setSelectedSizes(prevSizes => {
-            const currentCount = prevSizes[size] || 0;
-            const newSizes = {
-                ...prevSizes,
-                [size]: currentCount + 1,
-            };
-            console.log("Selected sizes updated:", newSizes);
-            return newSizes;
-        });
-    };
-
-    // Calculate total price based on selected sizes and quantity
     const totalPrice = details.product.price * quantity + Object.keys(selectedSizes).reduce((total, size) => {
         return total + (details.product.price * selectedSizes[size]);
     }, 0);
-    
-    console.log("Total price calculated:", totalPrice.toFixed(2));
 
-    // Handle adding to cart
     const handleAddToCartClick = () => {
         const finalImageUrl = selectedImage || (details.images.length > 0 ? details.images[0] : '');
         const cartItem = {
@@ -85,16 +44,11 @@ const ProductDetail = ({ product, onClose, onAddToCart }) => {
             selectedSizes,
             image_url: finalImageUrl,
         };
-        console.log("Adding to cart:", cartItem);
         onAddToCart(cartItem);
         onClose();
     };
 
-    // Handle image thumbnail click
-    const handleImageClick = (image) => {
-        setSelectedImage(image); // Update to use image directly
-        console.log("Selected image changed to:", image);
-    };
+    const handleImageClick = image => setSelectedImage(image);
 
     return (
         <div className="product-detail-modal">
@@ -115,10 +69,10 @@ const ProductDetail = ({ product, onClose, onAddToCart }) => {
                                     {details.images.map((image, index) => (
                                         <img
                                             key={index}
-                                            src={image} // Use the image URL directly
+                                            src={image}
                                             alt={`Thumbnail ${index + 1}`}
                                             className={`thumbnail-image ${selectedImage === image ? 'selected' : ''}`}
-                                            onClick={() => handleImageClick(image)} // Use the image URL directly
+                                            onClick={() => handleImageClick(image)}
                                         />
                                     ))}
                                 </div>
@@ -131,9 +85,6 @@ const ProductDetail = ({ product, onClose, onAddToCart }) => {
                                     <p><strong>Category:</strong> {details.product.category_name || 'N/A'}</p>
                                     <p><strong>Subcategory:</strong> {details.product.subcategory_name || 'N/A'}</p>
                                     <p>Status: {details.product?.status || 'N/A'}</p>
-                                    <p><strong>Selected Sizes:</strong> {Object.entries(selectedSizes).map(([size, count]) => `${size} (x${count})`).join(', ') || 'None'}</p>
-                                    <p><strong>Selected Color:</strong> <span style={{ backgroundColor: selectedColor, padding: '5px 10px', color: '#fff', borderRadius: '4px' }}>{selectedColor}</span></p>
-                                    <h5>Total Price: ${totalPrice.toFixed(2)}</h5>
                                 </div>
 
                                 <div className="product-detail-info2">
@@ -155,20 +106,20 @@ const ProductDetail = ({ product, onClose, onAddToCart }) => {
                                     <div className="colors">
                                         <div>Color</div>
                                         <div className='color-btn'>
-                                        {details.colors && details.colors.length > 0 ? (
-                                            details.colors.map(color => (
-                                                <button
-                                                    key={color.color_name}
-                                                    className={`color-btn ${selectedColor === color.color_name ? 'selected' : ''}`}
-                                                    style={{ backgroundColor: color.color_name }}
-                                                    onClick={() => handleColorSelect(color.color_name)}
-                                                >
-                                                    {color.color_name}
-                                                </button>
-                                            ))
-                                        ) : (
-                                            <p>No colors available</p>
-                                        )}
+                                            {details.colors && details.colors.length > 0 ? (
+                                                details.colors.map(color => (
+                                                    <button
+                                                        key={color.color_name}
+                                                        className={`color-btn ${selectedColor === color.color_name ? 'selected' : ''}`}
+                                                        style={{ backgroundColor: color.color_name }}
+                                                        onClick={() => handleColorSelect(color.color_name)}
+                                                    >
+                                                        {color.color_name}
+                                                    </button>
+                                                ))
+                                            ) : (
+                                                <p>No colors available</p>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="quantity1">
@@ -176,7 +127,50 @@ const ProductDetail = ({ product, onClose, onAddToCart }) => {
                                         <div className="quantity-value">{quantity}</div>
                                         <button onClick={handleIncrement} className="quantity-btn">+</button>
                                     </div>
-                                    <button onClick={handleAddToCartClick} className="add-to-cart-btn">Add to Cart</button>
+                                    <div className="details-table">
+                                        <h5>Selected Options</h5>
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Attribute</th>
+                                                    <th>Details</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Selected Sizes</td>
+                                                    <td>
+                                                        <ul>
+                                                            {Object.entries(selectedSizes).map(([size, count]) => (
+                                                                <li key={size}>{size} (x{count})</li>
+                                                            ))}
+                                                        </ul>
+                                                        {Object.keys(selectedSizes).length === 0 && 'None'}
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Selected Color</td>
+                                                    <td>
+                                                        <span 
+                                                            style={{ 
+                                                                backgroundColor: selectedColor, 
+                                                                padding: '5px 10px', 
+                                                                color: '#fff', 
+                                                                borderRadius: '4px' 
+                                                            }}
+                                                        >
+                                                            {selectedColor}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Total Price</td>
+                                                    <td>${totalPrice.toFixed(2)}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <button onClick={handleAddToCartClick} className="add-to-cart-btn primary-button">Add to Cart</button>
                                 </div>
                             </div>
                         </>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode'; // Correctly import jwt-decode
+import {jwtDecode} from 'jwt-decode';
 import './profile.css'; // Ensure this CSS file is updated with the new styles
+import { FaEdit } from 'react-icons/fa'; // Importing the edit icon from react-icons
 
 const EditProfile = () => {
   const [formData, setFormData] = useState({
@@ -11,13 +12,14 @@ const EditProfile = () => {
     phone: '',
     location: '',
     password: '',
-    profileImage: '' // Added for profile image
+    profileImage: ''
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
-  const [questions, setQuestions] = useState([]); // Combined list of asked and answered questions
-  const [imagePreview, setImagePreview] = useState(''); // State for image preview
+  const [questions, setQuestions] = useState([]);
+  const [imagePreview, setImagePreview] = useState('');
+  const [isEditing, setIsEditing] = useState(false); // State to toggle edit mode
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,9 +35,8 @@ const EditProfile = () => {
         const res = await axios.get('http://localhost:4000/api/user', {
           headers: { Authorization: `Bearer ${token}` }
         });
-        console.log('User Details:', res.data); // Debugging line to check user details
         setFormData(res.data);
-        setImagePreview(res.data.profileImage); // Set initial image preview
+        setImagePreview(res.data.profileImage);
       } catch (error) {
         console.error('Error fetching user details:', error);
         if (error.response && error.response.status === 401) {
@@ -53,22 +54,16 @@ const EditProfile = () => {
 
       const decodedToken = jwtDecode(token);
       const userId = decodedToken.id;
-      console.log('Decoded User ID:', userId); // Debugging line to check decoded user ID
 
       try {
-        // Fetch questions asked by the user
         const askedRes = await axios.get(`http://localhost:4000/api/submissions/user/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        console.log('Asked Questions:', askedRes.data); // Debugging line to check asked questions
 
-        // Fetch answers given by the user
         const answeredRes = await axios.get(`http://localhost:4000/api/submissions/user/answers/${userId}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        console.log('Answered Questions:', answeredRes.data); // Debugging line to check answered questions
 
-        // Combine asked and answered questions
         const combinedQuestions = askedRes.data.map((question) => {
           const answer = answeredRes.data.find(
             (ans) => ans.submissionId === question.id
@@ -76,8 +71,8 @@ const EditProfile = () => {
           return {
             ...question,
             answer: answer ? answer.answer : null,
-            answerBudget: answer ? answer.budget : null,
-            paymentStatus: answer ? answer.paymentStatus : 'pending' // Add payment status
+            answerBudget: answer ? answer.budget : 0,
+            paymentStatus: answer ? answer.paymentStatus : 'pending'
           };
         });
         setQuestions(combinedQuestions);
@@ -94,10 +89,9 @@ const EditProfile = () => {
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (name === 'profileImage') {
-      // Handle image file input
       const file = files[0];
       setFormData({ ...formData, [name]: file });
-      setImagePreview(URL.createObjectURL(file)); // Update image preview
+      setImagePreview(URL.createObjectURL(file));
     } else {
       setFormData({ ...formData, [name]: value });
       setErrors({ ...errors, [name]: '' });
@@ -126,10 +120,11 @@ const EditProfile = () => {
       await axios.put('http://localhost:4000/api/user', formDataToSend, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data' // Required for file uploads
+          'Content-Type': 'multipart/form-data'
         }
       });
       setSuccessMessage('Profile updated successfully');
+      setIsEditing(false); // Exit edit mode after successful update
       setTimeout(() => {
         navigate('/profile');
       }, 2000);
@@ -144,116 +139,182 @@ const EditProfile = () => {
     }
   };
 
+  // Calculate totals
+  const totalPaidAmount = questions
+    .filter(q => q.paymentStatus === 'completed')
+    .reduce((total, q) => total + (q.budget || 0), 0);
+
+  const totalPendingAmount = questions
+    .filter(q => q.paymentStatus === 'pending')
+    .reduce((total, q) => total + (q.budget || 0), 0);
+
+  const totalAnsweredAmount = questions
+    .reduce((total, q) => total + (q.answerBudget || 0), 0);
+
+  // Safeguard with default values to ensure they are numbers
+  const safeToFixed = (value) => {
+    const numberValue = Number(value);
+    return isNaN(numberValue) ? '0.00' : numberValue.toFixed(2);
+  };
+
   return (
     <div className="edit-profile">
-      <h2>Edit Profile</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="profile-image-container">
-          <img
-            src={imagePreview || 'default-profile-image.png'} // Fallback image if none is selected
-            alt="Profile"
-            className="profile-image"
-          />
+      <h2>{isEditing ? 'Edit Profile' : 'Profile Details'}</h2>
+      {isEditing ? (
+        <form onSubmit={handleSubmit}>
+          <div className="profile-image-container">
+            <img
+              src={imagePreview || 'default-profile-image.png'}
+              alt="Profile"
+              className="profile-image"
+            />
+            <div className="profile-image-edit">
+              <label htmlFor="profileImage" className="edit-icon">
+                <FaEdit />
+              </label>
+              <input
+                type="file"
+                id="profileImage"
+                name="profileImage"
+                accept="image/*"
+                onChange={handleChange}
+                style={{ display: 'none' }}
+              />
+            </div>
+          </div>
           <div>
-            <label htmlFor="profileImage">Profile Image:</label>
+            <label>Name:</label>
             <input
-              type="file"
-              id="profileImage"
-              name="profileImage"
-              accept="image/*"
+              type="text"
+              name="name"
+              value={formData.name}
               onChange={handleChange}
             />
           </div>
-        </div>
-        <div>
-          <label>Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label>Phone:</label>
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label>Location:</label>
-          <input
-            type="text"
-            name="location"
-            value={formData.location}
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          <label>Password (leave blank to keep current password):</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-        </div>
-        {errors.apiError && <span className="error-message">{errors.apiError}</span>}
-        {successMessage && <span className="success-message">{successMessage}</span>}
-        <button type="submit" disabled={loading}>
-          {loading ? 'Updating...' : 'Update Profile'}
-        </button>
-      </form>
-
-      <h2>Tasks You Have Done</h2>
-      {questions.length > 0 ? (
-        questions.filter(q => q.answer).map((item) => (
-          <div key={item.id} className="task-item">
-            <p><strong>Question:</strong> {item.question}</p>
-            <p><strong>Answer:</strong> {item.answer}</p>
-            <p><strong>Budget:</strong> ${item.answerBudget}</p>
-            <p><strong>Payment Status:</strong> {item.paymentStatus === 'completed' ? 'Paid' : 'Pending'}</p>
+          <div>
+            <label>Email:</label>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+            />
           </div>
-        ))
+          <div>
+            <label>Phone:</label>
+            <input
+              type="text"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label>Location:</label>
+            <input
+              type="text"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label>Password (leave blank to keep current password):</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+          </div>
+          {errors.apiError && <span className="error-message">{errors.apiError}</span>}
+          {successMessage && <span className="success-message">{successMessage}</span>}
+          <button type="submit" disabled={loading}>
+            {loading ? 'Updating...' : 'Update Profile'}
+          </button>
+          <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+        </form>
       ) : (
-        <p>You have not completed any tasks yet.</p>
+        <div className="profile-details">
+          <div className="profile-image-container">
+            <img
+              src={imagePreview || 'default-profile-image.png'}
+              alt="Profile"
+              className="profile-image"
+            />
+            <div className="profile-image-edit">
+              <label htmlFor="profileImage" className="edit-icon" onClick={() => setIsEditing(true)}>
+                <FaEdit />
+              </label>
+            </div>
+          </div>
+          <div>
+            <strong>Name:</strong> {formData.name}
+          </div>
+          <div>
+            <strong>Email:</strong> {formData.email}
+          </div>
+          <div>
+            <strong>Phone:</strong> {formData.phone}
+          </div>
+          <div>
+            <strong>Location:</strong> {formData.location}
+          </div>
+        </div>
       )}
 
-      <h2>Your Questions</h2>
-      {questions.length > 0 ? (
-        questions.map((item) => (
-          <div key={item.id} className="question-item">
-            <p><strong>Question:</strong> {item.question}</p>
-            <p><strong>Budget:</strong> ${item.budget}</p>
-            {item.answer ? (
-              item.paymentStatus === 'completed' ? (
-                <>
-                  <p><strong>Answer:</strong> {item.answer}</p>
-                  <p><strong>Answer Budget:</strong> ${item.answerBudget}</p>
-                </>
-              ) : (
-                <p><strong>Make Payment:</strong> To view the answer, please complete the payment.</p>
-              )
-            ) : (
-              <p><strong>Answered:</strong> No</p>
-            )}
-          </div>
-        ))
-      ) : (
-        <p>You have not asked any questions yet.</p>
-      )}
+      <h2>My Tasks</h2>
+      <div className="tasks-summary">
+        <p>Total Paid Amount: ${safeToFixed(totalPaidAmount)}</p>
+        <p>Total Pending Amount: ${safeToFixed(totalPendingAmount)}</p>
+        <p>Total Answered Amount: ${safeToFixed(totalAnsweredAmount)}</p>
+      </div>
+
+      <h3>Tasks</h3>
+      <table className="tasks-table">
+        <thead>
+          <tr>
+            <th>Task ID</th>
+            <th>Question</th>
+            <th>Answer</th>
+            <th>Budget</th>
+            <th>Payment Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {questions.map((q) => (
+            <tr key={q.id}>
+              <td>{q.id}</td>
+              <td>{q.question}</td>
+              <td>{q.answer || 'Not Answered'}</td>
+              <td>${q.budget || 0}</td>
+              <td>{q.paymentStatus}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h3>Answered Tasks</h3>
+      <table className="questions-table">
+        <thead>
+          <tr>
+            <th>Task ID</th>
+            <th>Question</th>
+            <th>Answer</th>
+            <th>Answer Budget</th>
+          </tr>
+        </thead>
+        <tbody>
+          {questions.filter(q => q.answer).map((q) => (
+            <tr key={q.id}>
+              <td>{q.id}</td>
+              <td>{q.question}</td>
+              <td>{q.answer}</td>
+              <td>${q.answerBudget || 0}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
