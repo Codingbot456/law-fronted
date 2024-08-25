@@ -7,6 +7,8 @@ import apparel1 from '../../../assets/images/apparel-1.jpg';
 import stationary from '../../../assets/images/stationary-1.jpg';
 import study from '../../../assets/images/study-aids.jpg';
 import office from '../../../assets/images/office supplies.jpg';
+import office2 from '../../../assets/images/miscalenous-1.jpg';
+
 import gadgets from '../../../assets/images/gadgets-1.jpg';
 import './home.css';
 
@@ -25,6 +27,7 @@ const Home = () => {
 
   return (
     <div className="container">
+      <h1>Place Your Order</h1>
       <div className='home-top'>
         <Slider {...settings}>
           <div>
@@ -37,6 +40,7 @@ const Home = () => {
             <img src={study} alt="Study-Aids" />
           </div>
         </Slider>
+      
       </div>
       <div className='discounted-section'>
         <Discounted1 />
@@ -47,7 +51,7 @@ const Home = () => {
       <div className='home-mid'>
         <div className='top-row'>
           <img src={office} alt="Office" />
-          <img src={office} alt="Office" />
+          <img src={office2} alt="Office2" />
         </div>
         <div className='home-last'>
         <img src={gadgets} alt="Gadgets" />

@@ -4,19 +4,22 @@
 .navbar {
     background-color: var(--primary-color); /* Background color for the nav */
     padding: 20px;
-    border-radius: 8px;
+    border-right: .3px solid grey;
+    height: 100vh;
     width: 250px; /* Set a fixed width for the sidebar */
-    min-height: 100vh; /* Ensure it covers the full height of the viewport */
-    position: fixed; /* Fix the sidebar in place */
     top: 0;
+    position: sticky;
     left: 0;
+
   }
   
   /* Navigation List */
   .navbar-list {
+    position: sticky;
     list-style: none;
     padding: 0;
-    margin: 0;
+    margin-top: 30px;
+  
   }
   
   .navbar-item {

@@ -2,21 +2,27 @@
 
 /* Specific styles for DashHome component */
 .dash-home-container {
-  padding: 20px;
+  width: 100%;
+ 
   background-color: var(--background-color);
   display: flex;
+  justify-content: center;
+  gap:20%;
+ 
+ 
 }
 
 .dash-home-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+
+ flex: 1;
+ 
 }
 
 .dash-home-nav {
   flex-shrink: 0;
-  width: 200px; /* Adjust width as needed */
+  position: sticky;
+  top: 0;
+  width: 20px; /* Adjust width as needed */
 }
 
 .dash-home-title {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './createForm.css';
+import './createForm.css'; // Ensure this imports the global styles
 
 function CreateForm({ product }) {
   const [name, setName] = useState('');
@@ -18,7 +18,7 @@ function CreateForm({ product }) {
   const [selectedColors, setSelectedColors] = useState([]);
   const [images, setImages] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
-  const [removedImages, setRemovedImages] = useState([]); // To track removed images
+  const [removedImages, setRemovedImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusMessage, setStatusMessage] = useState('');
   const [statusType, setStatusType] = useState('');
@@ -75,7 +75,7 @@ function CreateForm({ product }) {
 
   const handleRemoveImage = (imageUrl) => {
     setExistingImages(prev => prev.filter(image => image !== imageUrl));
-    setRemovedImages(prev => [...prev, imageUrl]); // Track removed images
+    setRemovedImages(prev => [...prev, imageUrl]);
   };
 
   const handleSubmit = async (e) => {
@@ -91,7 +91,7 @@ function CreateForm({ product }) {
     selectedSizes.forEach(size => formData.append('size_ids[]', size));
     selectedColors.forEach(color => formData.append('color_ids[]', color));
     existingImages.forEach(image => formData.append('existing_images[]', image));
-    removedImages.forEach(image => formData.append('removed_images[]', image)); // Include removed images
+    removedImages.forEach(image => formData.append('removed_images[]', image));
     Array.from(images).forEach(image => formData.append('images', image));
 
     try {
@@ -248,7 +248,7 @@ function CreateForm({ product }) {
                   <button
                     type="button"
                     onClick={() => handleRemoveImage(image)}
-                    className="remove-image-button"
+                    className="small-button"
                   >
                     Remove
                   </button>
@@ -272,7 +272,7 @@ function CreateForm({ product }) {
           )}
         </div>
 
-        <button type="submit">Save Product</button>
+        <button type="submit" className="accent-button">Save Product</button>
         {statusMessage && (
           <div className={`status-message ${statusType}`}>
             {statusMessage}
