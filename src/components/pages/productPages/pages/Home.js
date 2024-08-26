@@ -41,7 +41,8 @@ const Home = () => {
           </div>
         </Slider>
       
-      </div>
+      </div >
+      <div className="home-container">
       <div className='discounted-section'>
         <Discounted1 />
       </div>
@@ -62,6 +63,7 @@ const Home = () => {
       <div className='featured-section'>
         <Featured1 />
       </div>
+    </div>
     </div>
   );
 }

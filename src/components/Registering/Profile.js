@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode'; // Ensure this import matches your setup
 import './profile.css'; // Ensure this CSS file is updated with the new styles
 import { FaEdit } from 'react-icons/fa'; // Importing the edit icon from react-icons
 
@@ -18,8 +18,10 @@ const EditProfile = () => {
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [questions, setQuestions] = useState([]);
+  const [orders, setOrders] = useState([]); // State for user orders
   const [imagePreview, setImagePreview] = useState('');
   const [isEditing, setIsEditing] = useState(false); // State to toggle edit mode
+  const [expandedOrderId, setExpandedOrderId] = useState(null); // State to track expanded order details
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -82,8 +84,27 @@ const EditProfile = () => {
       }
     };
 
+    const fetchUserOrders = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.id;
+
+      try {
+        const res = await axios.get(`http://localhost:4000/api/orders/user-orders/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setOrders(res.data);
+      } catch (error) {
+        console.error('Error fetching user orders:', error);
+        setErrors({ apiError: 'An error occurred while fetching orders.' });
+      }
+    };
+
     fetchUserDetails();
     fetchUserQuestionsAndAnswers();
+    fetchUserOrders();
   }, [navigate]);
 
   const handleChange = (e) => {
@@ -139,17 +160,20 @@ const EditProfile = () => {
     }
   };
 
-  // Calculate totals
+  // Debugging: Log the questions data
+  console.log("Questions Data:", questions);
+
+  // Calculate totals with safeguards for undefined values
   const totalPaidAmount = questions
     .filter(q => q.paymentStatus === 'completed')
-    .reduce((total, q) => total + (q.budget || 0), 0);
+    .reduce((total, q) => total + (Number(q.budget) || 0), 0);
 
   const totalPendingAmount = questions
     .filter(q => q.paymentStatus === 'pending')
-    .reduce((total, q) => total + (q.budget || 0), 0);
+    .reduce((total, q) => total + (Number(q.budget) || 0), 0);
 
   const totalAnsweredAmount = questions
-    .reduce((total, q) => total + (q.answerBudget || 0), 0);
+    .reduce((total, q) => total + (Number(q.answerBudget) || 0), 0);
 
   // Safeguard with default values to ensure they are numbers
   const safeToFixed = (value) => {
@@ -157,9 +181,13 @@ const EditProfile = () => {
     return isNaN(numberValue) ? '0.00' : numberValue.toFixed(2);
   };
 
+  const handleToggleOrderDetails = (orderId) => {
+    setExpandedOrderId(expandedOrderId === orderId ? null : orderId);
+  };
+
   return (
     <div className="edit-profile">
-      <h2>{isEditing ? 'Edit Profile' : 'Profile Details'}</h2>
+      <h2>{isEditing ? 'Edit Profile' : 'My-Account'}</h2>
       {isEditing ? (
         <form onSubmit={handleSubmit}>
           <div className="profile-image-container">
@@ -183,59 +211,60 @@ const EditProfile = () => {
             </div>
           </div>
           <div>
-            <label>Name:</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-            />
+            <label>
+              Name:
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+              />
+              {errors.name && <span className="error">{errors.name}</span>}
+            </label>
           </div>
           <div>
-            <label>Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-            />
+            <label>
+              Email:
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+              {errors.email && <span className="error">{errors.email}</span>}
+            </label>
           </div>
           <div>
-            <label>Phone:</label>
-            <input
-              type="text"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-            />
+            <label>
+              Phone:
+              <input
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+              />
+              {errors.phone && <span className="error">{errors.phone}</span>}
+            </label>
           </div>
           <div>
-            <label>Location:</label>
-            <input
-              type="text"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-            />
+            <label>
+              Location:
+              <input
+                type="text"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+              />
+              {errors.location && <span className="error">{errors.location}</span>}
+            </label>
           </div>
-          <div>
-            <label>Password (leave blank to keep current password):</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-          </div>
-          {errors.apiError && <span className="error-message">{errors.apiError}</span>}
-          {successMessage && <span className="success-message">{successMessage}</span>}
           <button type="submit" disabled={loading}>
             {loading ? 'Updating...' : 'Update Profile'}
           </button>
           <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
         </form>
       ) : (
-        <div className="profile-details">
+        <div>
           <div className="profile-image-container">
             <img
               src={imagePreview || 'default-profile-image.png'}
@@ -287,7 +316,7 @@ const EditProfile = () => {
               <td>{q.id}</td>
               <td>{q.question}</td>
               <td>{q.answer || 'Not Answered'}</td>
-              <td>${q.budget || 0}</td>
+              <td>${safeToFixed(q.budget)}</td>
               <td>{q.paymentStatus}</td>
             </tr>
           ))}
@@ -310,11 +339,79 @@ const EditProfile = () => {
               <td>{q.id}</td>
               <td>{q.question}</td>
               <td>{q.answer}</td>
-              <td>${q.answerBudget || 0}</td>
+              <td>${safeToFixed(q.answerBudget)}</td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      <h2>My Orders</h2>
+      <table className="orders-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.length > 0 ? (
+            orders.map((order) => (
+              <React.Fragment key={order.id}>
+                <tr>
+                  <td>{order.id}</td>
+                  <td>
+                    <button onClick={() => handleToggleOrderDetails(order.id)}>
+                      {expandedOrderId === order.id ? 'Hide Details' : 'View Details'}
+                    </button>
+                  </td>
+                </tr>
+                {expandedOrderId === order.id && (
+                  <tr>
+                    <td colSpan="2">
+                      <div className="order-details">
+                        <h3>Order Details</h3>
+                        <p><strong>Order ID:</strong> {order.id}</p>
+                        <p><strong>User Name:</strong> {order.user_name}</p>
+                        <p><strong>Email:</strong> {order.email}</p>
+                        <p><strong>Phone Number:</strong> {order.phone_number}</p>
+                        <p><strong>Address:</strong> {order.address}</p>
+                        <p><strong>City:</strong> {order.city}</p>
+                        <p><strong>State:</strong> {order.state}</p>
+                        <p><strong>Zip Code:</strong> {order.zip_code}</p>
+                        <p><strong>County:</strong> {order.county}</p>
+                        <p><strong>Shipping Fee:</strong> ${order.shipping_fee}</p>
+                        <p><strong>Total Price:</strong> ${order.total_price}</p>
+                        <p><strong>Order Date:</strong> {new Date(order.order_date).toLocaleDateString()}</p>
+                        <p><strong>Current Status:</strong> {order.current_status}</p>
+                        <h4>Items:</h4>
+                        <div className="order-items">
+                          {order.items.map(item => (
+                            <div key={item.product_id} className="item-card">
+                              <img src={item.image_url} alt={item.name} />
+                              <p><strong>Product Name:</strong> {item.name}</p>
+                              <p><strong>Price:</strong> ${item.price}</p>
+                              <p><strong>Quantity:</strong> {item.quantity}</p>
+                              <p><strong>Total Price:</strong> ${item.total_price_item}</p>
+                              <p><strong>Color:</strong> {item.selected_color || 'N/A'}</p>
+                              <p><strong>Sizes:</strong> {item.selected_sizes || 'N/A'}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="2">No orders found</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+    
     </div>
   );
 };

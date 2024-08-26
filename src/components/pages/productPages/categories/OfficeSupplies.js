@@ -12,6 +12,7 @@ import sortProducts from '../../../../utils/sortProducts';
 import filterProducts from '../../../../utils/filterProducts';
 import useWindowResize from '../../../hooks/useWindowResize';
 import { CiFilter } from "react-icons/ci";
+import officeSupplies from '../../../assets/images/office supplies.jpg';
 
 const  OfficeSupplies= () => {
   const [products, setProducts] = useState([]);
@@ -82,8 +83,8 @@ const  OfficeSupplies= () => {
               <li><Link to="/cart">Cart</Link></li>
             </ul>
           </div>
+          <div className='filters-filters'>
           <h3>Filters</h3>
-          <div>
             <Filter onFilterChange={handleFilterChange} />
           </div>
           {isMobile && <button className='close-toggle' onClick={closeFilters}>Close Filters</button>}
@@ -91,6 +92,9 @@ const  OfficeSupplies= () => {
       </div>
 
       <div className='all-items'>
+      <div className='eccom-images'>
+            <img src={officeSupplies} alt="Apparel" />
+          </div>
         <div className='sort'>
           {isMobile &&  <CiFilter  className='toggle' onClick={toggleFilters}/> }
           <select className='sorts' onChange={handleSortChange}>
@@ -103,6 +107,7 @@ const  OfficeSupplies= () => {
         </div>
 
         <div className='all-prods'> 
+       
           <div className={`home-prods3 ${selectedProduct ? 'dimmed' : ''}`}>
             <h2>OfficeSupplies</h2>
             <input

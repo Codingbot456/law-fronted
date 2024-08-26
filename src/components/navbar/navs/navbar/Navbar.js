@@ -18,6 +18,7 @@ const Navbar = ({ toggleSidebar, toggleCart }) => {
         <button className="cart-toggler" onClick={toggleCart} aria-label="Toggle Cart">
           <FaShoppingCart className="cart-icon" />
         </button>
+       
         <button className="sidebar-toggler" onClick={toggleSidebar}>
           ☰
         </button>

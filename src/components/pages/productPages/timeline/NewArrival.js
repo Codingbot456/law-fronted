@@ -12,6 +12,7 @@ import sortProducts from '../../../../utils/sortProducts';
 import filterProducts from '../../../../utils/filterProducts';
 import useWindowResize from '../../../hooks/useWindowResize';
 import { CiFilter } from "react-icons/ci";
+import officeSupplies from '../../../assets/images/office supplies.jpg';
 
 const NewArrival = () => {
   const [products, setProducts] = useState([]);
@@ -91,6 +92,9 @@ const NewArrival = () => {
       </div>
 
       <div className='all-items'>
+      <div className='eccom-images'>
+            <img src={officeSupplies} alt="Apparel" />
+          </div>
         <div className='sort'>
           {isMobile &&  <CiFilter  className='toggle' onClick={toggleFilters}/> }
           <select className='sorts' onChange={handleSortChange}>

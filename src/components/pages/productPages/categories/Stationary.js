@@ -13,6 +13,8 @@ import filterProducts from '../../../../utils/filterProducts';
 import useWindowResize from '../../../hooks/useWindowResize';
 import { CiFilter } from "react-icons/ci";
 
+import stationary11 from '../../../assets/images/stationary-1.jpg';
+
 const Stationary = () => {
   const [products, setProducts] = useState([]);
   const [filters, setFilters] = useState({});
@@ -91,6 +93,9 @@ const Stationary = () => {
       </div>
 
       <div className='all-items'>
+      <div className='eccom-images'>
+            <img src={stationary11} alt="Apparel" />
+          </div>
         <div className='sort'>
           {isMobile &&  <CiFilter  className='toggle' onClick={toggleFilters}/> }
           <select className='sorts' onChange={handleSortChange}>

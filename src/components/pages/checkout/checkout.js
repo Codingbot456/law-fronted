@@ -2,11 +2,14 @@ import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { CartContext } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext'; // Import useAuth hook
 import './checkout.css';
 
 const CheckoutForm = () => {
   const { cartItems } = useContext(CartContext);
+  const { userId } = useAuth(); // Use useAuth hook to get user ID
   const [formData, setFormData] = useState({
+    user_id: '', // Added user_id
     user_name: '',
     email: '',
     phone_number: '',
@@ -31,6 +34,7 @@ const CheckoutForm = () => {
       try {
         const response = await axios.get('http://localhost:4000/api/orders/counties');
         setCounties(response.data);
+        console.log('Counties fetched:', response.data); // Log counties fetched
       } catch (error) {
         console.error('Error fetching counties:', error);
       }
@@ -59,15 +63,29 @@ const CheckoutForm = () => {
   useEffect(() => {
     if (formData.county_id) {
       const county = counties.find(c => c.id === parseInt(formData.county_id));
-      // Convert shipping fee to number before setting it
       setShippingFee(county ? Number(county.shipping_fee) : 0);
+      console.log('Updated shipping fee:', shippingFee); // Log shipping fee update
     }
   }, [formData.county_id, counties]);
+
+  // Set user_id when userId from useAuth changes
+  useEffect(() => {
+    if (userId) {
+      setFormData((prev) => ({ ...prev, user_id: userId }));
+      console.log('User ID set in formData:', userId); // Log user ID
+    }
+  }, [userId]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
     setErrorMessage('');
+
+    if (!formData.user_id) {
+      setErrorMessage('User ID is required');
+      setIsLoading(false);
+      return;
+    }
 
     const total_price = calculateTotalPrice(); // Calculate total price
     const order_date = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -88,7 +106,7 @@ const CheckoutForm = () => {
       console.log('Order created successfully:', data); // Log response from the server
       navigate('/payment', { state: { formData: dataToSend } });
     } catch (error) {
-      setErrorMessage('Error creating order: ' + error.message);
+      setErrorMessage('Error creating order: ' + (error.response ? error.response.data : error.message));
       console.error('Error creating order:', error); // Log the error
     } finally {
       setIsLoading(false);
@@ -98,6 +116,7 @@ const CheckoutForm = () => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
+    console.log('FormData updated:', formData); // Log form data updates
   };
 
   // Calculate the total price for all items in the cart
