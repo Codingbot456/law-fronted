@@ -1,16 +1,94 @@
-/* AboutSection.css */
+/* src/components/AboutSection.css */
 .about-section {
-    margin-bottom: 2rem;
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  background-color: var(--background-color);
+}
+
+.about-content {
+  max-width: 1200px;
+  width: 100%;
+  padding: 1rem;
+}
+
+.about-item {
+  display: flex;
+  align-items: center;
+  margin: 2rem 0;
+  padding: 1rem;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.about-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 1rem;
+}
+
+.text-content {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-family: 'Playfair Display', serif;
+  color: var(--text-color);
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 2rem;
+  font-family: 'Playfair Display', serif;
+  color: var(--text-color);
+  margin-bottom: 0.5rem;
+}
+
+p {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .about-item {
+    flex-direction: column;
+    text-align: center;
   }
-  
-  .about-section h1 {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: var(--primary-color);
+
+  .about-image {
+    margin-right: 0;
+    margin-bottom: 1rem;
   }
-  
-  .about-section p {
-    font-size: 1rem;
-    color: var(--text-color);
+
+  h1 {
+    font-size: 2rem;
   }
-  
+
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  p {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 0.75rem;
+  }
+}

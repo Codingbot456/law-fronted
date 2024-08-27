@@ -1,19 +1,56 @@
-// src/pages/AboutPage.js
+// src/components/AboutSection.js
 import React from 'react';
-import './About.css'; // Import specific styles for the About page
+import './About.css'; // Import the component-specific CSS file
+import apparel1 from '../../assets/images/apparel-1.jpg';
 
-const AboutPage = () => (
-  <div className="about-page">
+const AboutPage = () => {
+  return (
     <section className="about-section">
-      <h1>About Us</h1>
-      <p>
-        Welcome to [Your App Name], where we’re dedicated to transforming the way law students and legal professionals navigate their academic and career journeys. Our platform offers a robust set of tools designed to support your success—from our innovative Law Solver, which simplifies complex legal problems, to our insightful blog and comprehensive eCommerce store tailored for legal resources.
-      </p>
-      <p>
-        At [Your App Name], our motivation stems from a commitment to empower law students and legal professionals with cutting-edge solutions and resources. We understand the challenges of legal education and practice, and our goal is to provide a one-stop solution that supports your learning, professional growth, and daily needs.
-      </p>
+      <div className="about-content">
+        <h1>About Us</h1>
+        <div className="about-item">
+        <div className='about-1'>
+            <img src={apparel1} alt="Apparel" />
+          </div>
+          <div className="text-content">
+            <h2>Mission and Values</h2>
+            <p>
+              At [Law School Name], we are dedicated to advancing legal education through a commitment to excellence, integrity, and justice.
+              Our mission is to prepare the next generation of legal professionals with the skills and ethical grounding needed to excel in a dynamic legal landscape.
+            </p>
+          </div>
+        </div>
+        <div className="about-item">
+        
+          <div className="text-content">
+            <h2>Innovative Features and Resources</h2>
+            <div className='about-1'>
+            <img src={apparel1} alt="Apparel" />
+          </div>
+            <p>
+              Our website features a range of resources designed to enrich the learning experience. Our blog offers insights and updates on legal trends,
+              faculty research, and student achievements. The e-commerce section provides access to a variety of legal books, tools, and merchandise,
+              while LawSolver delivers practical solutions and legal guidance for common issues.
+            </p>
+          </div>
+        </div>
+        <div className="about-item">
+         
+          <div className="text-content">
+            <h2>Student Experience and Community Engagement</h2>
+            <p>
+              Students at [Law School Name] benefit from immersive learning opportunities through our clinical programs, internships,
+              and active participation in student organizations. Our dedication to community engagement is reflected in our extensive pro bono work
+              and partnerships with local organizations, ensuring our students are well-prepared to contribute meaningfully to society.
+            </p>
+          </div>
+          <div className='about-1'>
+            <img src={apparel1} alt="Apparel" />
+          </div>
+        </div>
+      </div>
     </section>
-  </div>
-);
+  );
+};
 
 export default AboutPage;

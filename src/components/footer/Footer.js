@@ -1,7 +1,6 @@
 // src/components/Footer.js
 import React from 'react';
-import './footer.css'
-
+import './footer.css';
 
 const Footer = () => {
   return (
@@ -42,6 +41,29 @@ const Footer = () => {
             <a href="https://linkedin.com" aria-label="LinkedIn"><i className="fab fa-linkedin-in"></i></a>
             <a href="https://instagram.com" aria-label="Instagram"><i className="fab fa-instagram"></i></a>
           </div>
+        </div>
+        <div className="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="/terms-of-service">Terms of Service</a></li>
+            <li><a href="/privacy-policy">Privacy Policy</a></li>
+            <li><a href="/site-map">Site Map</a></li>
+            <li><a href="/careers">Careers</a></li>
+          </ul>
+        </div>
+        <div className="footer-section">
+          <h3>Contact Information</h3>
+          <p>123 Legal Lane, Suite 456</p>
+          <p>Legal City, LC 78901</p>
+          <p>Email: contact@lawschool.com</p>
+          <p>Phone: (123) 456-7890</p>
+        </div>
+        <div className="footer-section">
+          <h3>Newsletter Signup</h3>
+          <form className="newsletter-form">
+            <input type="email" placeholder="Your email address" aria-label="Email Address" />
+            <button type="submit" className="primary-button">Subscribe</button>
+          </form>
         </div>
       </div>
       <div className="footer-bottom">
