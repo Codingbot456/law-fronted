@@ -49,6 +49,32 @@
   margin: 0 0 15px; /* Increased margin for better spacing */
 }
 
+.blog-filters {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.filter-type-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.filter-button {
+  background-color: var(--button-background-color); /* Use button background color */
+  color: var(--button-text-color); /* Use button text color */
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px; /* Rounded corners */
+  transition: background-color 0.3s; /* Smooth transition */
+}
+
+.filter-button:hover {
+  background-color: var(--button-hover-background-color); /* Use hover background color */
+}
+
 .post p {
   font-size: 1rem;
   color: var(--text-color); /* Dark gray for text */
@@ -79,6 +105,7 @@
   cursor: pointer;
   font-size: 1.5rem;
   color: var(--primary-color); /* Use primary color for icons */
+  transition: color 0.3s; /* Smooth transition */
 }
 
 .post .actions .action-icon:hover {
@@ -121,6 +148,7 @@
   cursor: pointer;
   font-size: 1.5rem;
   color: var(--primary-color); /* Use primary color for icon */
+  transition: color 0.3s; /* Smooth transition */
 }
 
 .comment-form .submit-icon:hover {

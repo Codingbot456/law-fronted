@@ -6,18 +6,32 @@ const CreatePostForm = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [categoryId, setCategoryId] = useState('');
+  const [categories, setCategories] = useState([]); // State for categories
   const [images, setImages] = useState([]);
   const [error, setError] = useState('');
   const [authorId, setAuthorId] = useState(null); // Initialize authorId as null
 
   useEffect(() => {
-    // Fetch the logged-in user's ID from local storage
     const fetchUserId = () => {
       const userIdFromStorage = localStorage.getItem('userId');
       setAuthorId(userIdFromStorage);
     };
 
     fetchUserId();
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:4000/api/blog/categories');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        setError('Failed to fetch categories.');
+      }
+    };
+
+    fetchCategories();
   }, []);
 
   const handleImageChange = (e) => {
@@ -27,7 +41,6 @@ const CreatePostForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Check if authorId is available
     if (!authorId) {
       setError('User not authenticated.');
       return;
@@ -37,7 +50,7 @@ const CreatePostForm = () => {
     formData.append('title', title);
     formData.append('content', content);
     formData.append('category_id', categoryId);
-    formData.append('author_id', authorId); // Use the logged-in user's ID
+    formData.append('author_id', authorId);
 
     for (let i = 0; i < images.length; i++) {
       formData.append('images', images[i]);
@@ -87,14 +100,20 @@ const CreatePostForm = () => {
           />
         </div>
         <div>
-          <label htmlFor="category_id">Category ID</label>
-          <input
-            type="text"
+          <label htmlFor="category_id">Category</label>
+          <select
             id="category_id"
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
             required
-          />
+          >
+            <option value="">Select a category</option>
+            {categories.map(category => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label htmlFor="images">Images</label>

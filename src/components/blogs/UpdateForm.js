@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getPostById, updatePost } from '../../services/api'; // Ensure these API functions exist
+import axios from 'axios';
 import './UpdateForm.css'; // Import the CSS file
 
 const UpdateForm = () => {
@@ -12,6 +12,7 @@ const UpdateForm = () => {
   const [content, setContent] = useState('');
   const [categoryId, setCategoryId] = useState('');
   const [authorId, setAuthorId] = useState('');
+  const [categories, setCategories] = useState([]); // State for categories
   const [images, setImages] = useState([]);
   const [imagesToRemove, setImagesToRemove] = useState([]);
   const [newImages, setNewImages] = useState([]);
@@ -19,9 +20,23 @@ const UpdateForm = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('http://localhost:4000/api/blog/categories');
+        setCategories(response.data);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        setError('Failed to fetch categories.');
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await getPostById(id);
+        const response = await axios.get(`http://localhost:4000/api/blog/posts/${id}`);
         const postData = response.data;
         setPost(postData);
         setTitle(postData.title);
@@ -67,7 +82,11 @@ const UpdateForm = () => {
     formData.append('images_to_remove', JSON.stringify(imagesToRemove));
 
     try {
-      await updatePost(id, formData);
+      await axios.put(`http://localhost:4000/api/blog/posts/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       alert('Post updated successfully!');
       navigate('/'); // Navigate to the blog list page after successful update
     } catch (error) {
@@ -107,14 +126,20 @@ const UpdateForm = () => {
           />
         </div>
         <div>
-          <label htmlFor="category_id">Category ID</label>
-          <input
-            type="text"
+          <label htmlFor="category_id">Category</label>
+          <select
             id="category_id"
             value={categoryId}
             onChange={(e) => setCategoryId(e.target.value)}
             required
-          />
+          >
+            <option value="">Select a category</option>
+            {categories.map(category => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
         </div>
         <div>
           <label htmlFor="author_id">Author ID</label>
@@ -141,7 +166,7 @@ const UpdateForm = () => {
             images.map((image, index) => (
               <div key={index} style={{ marginBottom: '10px' }}>
                 <img
-                  src={image} // Use the full URL received from the server
+                  src={image}
                   alt={`Post image ${index + 1}`}
                 />
                 <button

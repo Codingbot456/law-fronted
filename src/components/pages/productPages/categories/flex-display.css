@@ -47,33 +47,41 @@
 
 
 .card-gap3 {
+
     display: flex;
     align-items: center;
    justify-content: center;
-    gap: 20px;
+   width: auto;
+
     border-radius: 10px;
     background-color: white;
     border: .3px solid grey;
-    width: 400px;
     overflow: hidden;
+
     height: 100%;
     padding: 0;
     margin: 0;
+    gap: 10px;
     
    
    
 }
 
 .card-info3 {
-  display: grid;
-  gap: 2px;
+  
+display: flex;
+flex-direction: column;
+justify-content: flex-start;
+  text-align: left;
+ width: auto;
+
   
    
 }
 
 .card-info3-3 h6,
 .card-info3-3 h5,
-.card-info3-3 p1 {
+.card-info3-3 p {
    
     
     white-space: nowrap;
@@ -81,7 +89,7 @@
     text-overflow: ellipsis;
     margin-top: 20px;
     display: block; /* Ensure display is block or inline-block */
-    width: 160px; /* Set a fixed width */
+    width: 170px; /* Set a fixed width */
 }
 
 
@@ -94,17 +102,17 @@
 
 
 .card-abt3 {
-    height: 100%;
+    height: 200px;
     width: 200px;
-    flex: 1;
+   
+
    
 }
 
 .card-image3 {
-    margin:0;
-   height: 200px;
-   width: 200px;
-   flex:1;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
     border-radius: 10px 0 0 10px;
 }
 .absolutePosition{
@@ -143,21 +151,25 @@
     }
     .card-gap3 {
     
-        max-width: 350px;
+        width: 100%;
+        min-width: 350px;
+        height: 200px;
        
        
 
     }
     .card-abt3 {
        
-       width: auto;
-       height: auto;
+       width: 100%;
+       height: 100%;
        border-radius: 0 0 -10px -10px;
       
     }
     .card-image3 {
     
         object-fit: cover;
+        height: 100%;
+        width: 100%;
 
        
     }

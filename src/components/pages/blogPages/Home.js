@@ -8,7 +8,7 @@ const Home = () => {
     <div >
       <div >
         <BlogList />
-        <PopularPosts />
+       
         
       
       </div>

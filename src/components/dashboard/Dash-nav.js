@@ -9,6 +9,7 @@ const DashNav = () => {
         <li className="navbar-item"><NavLink to="/dash-home/create-product">Create</NavLink></li>
         <li className="navbar-item"><NavLink to="/dash-home/product-list">Edit</NavLink></li>
         <li className="navbar-item"><NavLink to="/dash-home/orders">Orders</NavLink></li>
+        <li className="navbar-item"><NavLink to="/dash-home/all-users">Users</NavLink></li>
       </ul>
     </nav>
   );

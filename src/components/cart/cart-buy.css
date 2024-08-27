@@ -4,7 +4,11 @@
     border: none;
     cursor: pointer;
     flex: 1;
+    border-radius: 10px;
+    overflow: hidden;
   }
+ 
+
   
   .card .card-info4-4 p{
     height: 20px;

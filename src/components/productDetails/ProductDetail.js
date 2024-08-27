@@ -89,6 +89,7 @@ const ProductDetail = ({ product, onClose, onAddToCart }) => {
 
                                 <div className="product-detail-info2">
                                     <div className="sizes">
+                                        <p>Sizes:</p>
                                         {details.product.sizes && details.product.sizes.length > 0 ? (
                                             details.product.sizes.map(size => (
                                                 <button
@@ -104,7 +105,7 @@ const ProductDetail = ({ product, onClose, onAddToCart }) => {
                                         )}
                                     </div>
                                     <div className="colors">
-                                        <div>Color</div>
+                                        <div><p>Colors:</p></div>
                                         <div className='color-btn'>
                                             {details.colors && details.colors.length > 0 ? (
                                                 details.colors.map(color => (

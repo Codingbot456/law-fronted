@@ -7,13 +7,15 @@ import { FaEdit, FaShareAlt, FaPaperPlane } from 'react-icons/fa'; // Import ico
 const BlogList = () => {
   const [posts, setPosts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(''); // Default to '' to show all posts
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [newComment, setNewComment] = useState({});
   const [comments, setComments] = useState([]);
-  const [userId, setUserId] = useState(null); // Initialize as null
-  const [showComments, setShowComments] = useState({}); // State to handle visibility of comments
+  const [userId, setUserId] = useState(null);
+  const [showComments, setShowComments] = useState({});
+  const [filter, setFilter] = useState('newest'); // Default filter to 'newest'
+  const [expandedPosts, setExpandedPosts] = useState({}); // State to manage expanded posts
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -40,9 +42,8 @@ const BlogList = () => {
       try {
         const response = selectedCategory
           ? await getPostsByCategory(selectedCategory)
-          : await getPosts(); // Fetch all posts if no category selected
+          : await getPosts();
         setPosts(response.data);
-        console.log('Fetched posts:', response.data); // Log fetched posts
       } catch (error) {
         setError('Failed to load posts.');
       } finally {
@@ -57,7 +58,6 @@ const BlogList = () => {
       try {
         const response = await getComments();
         setComments(response.data);
-        console.log('Fetched comments:', response.data); // Log fetched comments
       } catch (error) {
         setError('Failed to load comments.');
       }
@@ -119,6 +119,27 @@ const BlogList = () => {
     });
   };
 
+  const toggleExpanded = (postId) => {
+    setExpandedPosts({
+      ...expandedPosts,
+      [postId]: !expandedPosts[postId]
+    });
+  };
+
+  const sortedPosts = () => {
+    switch (filter) {
+      case 'popular':
+        return [...posts].sort((a, b) => b.likes - a.likes);
+      case 'archived':
+        return [...posts].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      case 'newest':
+      default:
+        return [...posts].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // Newest first
+    }
+  };
+
+  const filteredPosts = sortedPosts();
+
   if (loading) {
     return <p>Loading posts...</p>;
   }
@@ -130,33 +151,43 @@ const BlogList = () => {
   return (
     <div className="blog-list-container">
       <h1>Blog Posts</h1>
-      <div>
-        <h2>Filter by Category</h2>
-        <select
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          value={selectedCategory}
-          className="category-select"
-        >
-          <option value="">All Categories</option>
-          {categories.map(category => (
-            <option key={category.id} value={category.id}>
-              {category.name}
-            </option>
-          ))}
-        </select>
+      <div className='blog-filters'>
+        <div>
+          <h2>Filter by Category</h2>
+          <select
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            value={selectedCategory}
+            className="category-select"
+          >
+            <option value="">All Categories</option>
+            {categories.map(category => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className='filter-type'>
+          <h2>Sort by</h2>
+          <div className='filter-type-actions'>
+            <button onClick={() => setFilter('newest')} className={`filter-button ${filter === 'newest' ? 'active-filter' : ''}`}>Newest</button>
+            <button onClick={() => setFilter('popular')} className={`filter-button ${filter === 'popular' ? 'active-filter' : ''}`}>Popular</button>
+            <button onClick={() => setFilter('archived')} className={`filter-button ${filter === 'archived' ? 'active-filter' : ''}`}>Archived</button>
+          </div>
+        </div>
       </div>
-      {posts.length === 0 ? (
+      {filteredPosts.length === 0 ? (
         <p>No posts available.</p>
       ) : (
-        posts.map(post => {
-          // Filter comments for the current post
+        filteredPosts.map(post => {
           const postComments = comments.filter(comment => comment.post_id === post.id);
+          const isExpanded = expandedPosts[post.id];
 
           return (
             <div key={post.id} className="post">
               <div className="post-header">
                 <img
-                  src={post.author_profile_image || '/default-avatar.png'} // Fallback to a default image
+                  src={post.author_profile_image || '/default-avatar.png'}
                   alt={`${post.author_name}'s avatar`}
                   className="author-image"
                 />
@@ -167,7 +198,14 @@ const BlogList = () => {
               </div>
               <p><strong>Author:</strong> {post.author_name}</p>
               <p><strong>Posted on:</strong> {new Date(post.created_at).toLocaleDateString()}</p>
-              <p>{post.content}</p>
+              <div>
+                <p>
+                  {isExpanded ? post.content : post.content.substring(0, 100) + '...'}
+                </p>
+                <button onClick={() => toggleExpanded(post.id)} className="read-more-button">
+                  {isExpanded ? 'Read Less' : 'Read More'}
+                </button>
+              </div>
               <div className="images">
                 {post.images && post.images.map((image, index) => (
                   <img
@@ -179,15 +217,15 @@ const BlogList = () => {
                 ))}
               </div>
               <div className="actions">
-                <button className="like-button" onClick={() => handleLike(post.id)}>👍</button>
-                <button className="share-button" onClick={() => handleShare(post.id)}>
+                <button className="action-icon like-button" onClick={() => handleLike(post.id)}>👍</button>
+                <button className="action-icon share-button" onClick={() => handleShare(post.id)}>
                   <FaShareAlt />
                 </button>
-                <button className="comment-button" onClick={() => toggleComments(post.id)}>
+                <button className="action-icon comment-button" onClick={() => toggleComments(post.id)}>
                   {showComments[post.id] ? 'Hide Comments' : 'Show Comments'}
                 </button>
                 <p>{post.likes} likes</p>
-                <p>{postComments.length} comments</p> {/* Number of comments */}
+                <p>{postComments.length} comments</p>
               </div>
               {showComments[post.id] && (
                 <div className="comments-section">
@@ -195,41 +233,41 @@ const BlogList = () => {
                   <form onSubmit={(e) => handleCommentSubmit(post.id, e)} className="comment-form">
                     <div className="comment-form-container">
                       <img
-                        src={userId ? `/path-to-user-image/${userId}.png` : '/default-avatar.png'} // Fallback to default image
+                        src={userId ? `/path-to-user-image/${userId}.png` : '/default-avatar.png'}
                         alt="Your avatar"
                         className="commenter-image"
                       />
                       <textarea
                         value={newComment[post.id] || ''}
                         onChange={(e) => handleCommentChange(e, post.id)}
-                        placeholder="Add comment..."
-                        required
+                        placeholder="Add a comment..."
+                        className="comment-input"
                       />
-                      <button type="submit" className="submit-icon">
-                        <FaPaperPlane /> {/* Submit icon */}
+                      <button type="submit" className="submit-comment-button">
+                        <FaPaperPlane />
                       </button>
                     </div>
                   </form>
-                  <ul>
+                  <div className="comments-list">
                     {postComments.map(comment => (
-                      <li key={comment.id} className="comment-item">
+                      <div key={comment.id} className="comment">
                         <img
-                          src={comment.author_profile_image || '/default-avatar.png'} // Fallback to a default image
-                          alt={`${comment.author_name}'s avatar`}
+                          src={comment.user_image || '/default-avatar.png'}
+                          alt={`${comment.user_name}'s avatar`}
                           className="commenter-image"
                         />
                         <div className="comment-content">
-                          <p className="comment-author">{comment.author_name || 'Anonymous'}</p>
-                          <p>{comment.content}</p>
+                          <p><strong>{comment.user_name}</strong>: {comment.content}</p>
+                          <p><small>{new Date(comment.created_at).toLocaleDateString()}</small></p>
                         </div>
-                      </li>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               )}
             </div>
           );
-        }) // Closing the map function here
+        })
       )}
     </div>
   );

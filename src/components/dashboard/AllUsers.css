@@ -1,0 +1,39 @@
+/* src/components/AllUsers.css */
+
+.all-users {
+    padding: 1rem;
+  }
+  
+  .user-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  .user-table th, .user-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .user-table th {
+    background-color: var(--primary-color);
+    color: #FFFFFF;
+  }
+  
+  .user-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .profile-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .user-icon {
+    font-size: 50px;
+    color: var(--text-muted); /* Adjust the color if needed */
+  }
+  
