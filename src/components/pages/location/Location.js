@@ -1,6 +1,7 @@
 // src/components/LocationSection.js
 import React from 'react';
 import './Location.css'; // Import your CSS file
+import apparel1 from '../../assets/images/apparel-1.jpg';
 
 const LocationPage= () => {
   return (
@@ -21,7 +22,9 @@ const LocationPage= () => {
             ></iframe>
           </div>
           <div className="location-details">
-            <img src="path/to/location-image.jpg" alt="Location" className="location-image" />
+          <div className='eccom-images'>
+            <img src={apparel1} alt="Apparel" />
+          </div>
             <div className="details-text">
               <h2>Our Office</h2>
               <p>123 Legal Lane, Suite 456</p>
